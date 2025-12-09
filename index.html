@@ -26,6 +26,90 @@ body {
   overflow-x: hidden;
 }
 
+/* Fullscreen Media Modal */
+.media-modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.95);
+  z-index: 2000;
+  justify-content: center;
+  align-items: center;
+}
+
+.media-modal.active {
+  display: flex;
+}
+
+.media-modal-content {
+  max-width: 95%;
+  max-height: 95%;
+  position: relative;
+}
+
+.media-modal-content img,
+.media-modal-content video {
+  max-width: 100%;
+  max-height: 95vh;
+  object-fit: contain;
+  border-radius: 8px;
+}
+
+.media-modal-close {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  border: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  font-size: 24px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.media-modal-close:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: scale(1.1);
+}
+
+.media-modal-download {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 25px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.media-modal-download:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: scale(1.05);
+}
+
+.media-preview {
+  cursor: pointer;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.media-preview:hover {
+  transform: scale(1.02);
+  opacity: 0.9;
+}
+
 /* Scrollbar Styling (Desktop) */
 ::-webkit-scrollbar {
   width: 12px;
@@ -101,11 +185,19 @@ body.early2000s-theme {
   box-shadow: 4px 4px 0 #666;
 }
 
-.early2000s-theme .tag {
+.early2000s-theme .tag.andre-tag {
   background: linear-gradient(45deg, #ff00ff, #ffff00);
   color: #000;
   font-weight: bold;
   animation: blink 2s infinite;
+  border: 2px solid #000;
+}
+
+.early2000s-theme .tag.regular-tag {
+  background: linear-gradient(45deg, #00ccff, #00ff99);
+  color: #000;
+  font-weight: bold;
+  border: 2px solid #000;
 }
 
 @keyframes blink {
@@ -162,7 +254,13 @@ body.early2000s-theme {
   box-shadow: 0 4px 12px rgba(0,0,0,0.15);
 }
 
-.normal-theme .tag {
+.normal-theme .tag.andre-tag {
+  background: linear-gradient(45deg, #ff0080, #ff8c00);
+  color: white;
+  font-weight: bold;
+}
+
+.normal-theme .tag.regular-tag {
   background: #4299e1;
   color: white;
 }
@@ -290,13 +388,46 @@ a:hover {
 }
 
 .tag {
-  background: #00f;
-  color: #fff;
   padding: 3px 8px;
   font-size: 12px;
   border-radius: 12px;
   display: inline-block;
   margin-left: 10px;
+}
+
+.author-info {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.author-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.author-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: linear-gradient(45deg, #667eea, #764ba2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.author-name {
+  font-weight: bold;
+  color: #4a5568;
+}
+
+.early2000s-theme .author-name {
+  color: #000;
 }
 
 .post button.delete {
@@ -310,6 +441,7 @@ a:hover {
   cursor: pointer;
   border-radius: 4px;
   font-size: 12px;
+  z-index: 10;
 }
 
 .post button.delete:hover {
@@ -348,6 +480,20 @@ a:hover {
     order: -1;
     margin-bottom: 10px;
   }
+  
+  .media-modal-close {
+    top: 10px;
+    right: 10px;
+    width: 35px;
+    height: 35px;
+  }
+  
+  .media-modal-download {
+    top: 10px;
+    left: 10px;
+    padding: 8px 16px;
+    font-size: 12px;
+  }
 }
 
 @media (max-width: 480px) {
@@ -370,6 +516,12 @@ a:hover {
   .post {
     padding: 10px;
   }
+  
+  .author-info {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 5px;
+  }
 }
 
 /* Loading Animation */
@@ -390,6 +542,15 @@ a:hover {
 </style>
 </head>
 <body class="early2000s-theme">
+
+<!-- Fullscreen Media Modal -->
+<div id="mediaModal" class="media-modal">
+  <div class="media-modal-content">
+    <button class="media-modal-close" onclick="closeMediaModal()">✕</button>
+    <button class="media-modal-download" onclick="downloadMedia()">Download</button>
+    <div id="modalMediaContainer"></div>
+  </div>
+</div>
 
 <div class="container">
   <div class="navbar">
@@ -450,6 +611,10 @@ firebase.initializeApp({
 const auth = firebase.auth();
 const db = firebase.firestore();
 
+// Variables for media modal
+let currentMediaUrl = '';
+let currentMediaType = '';
+
 // THEME MANAGEMENT
 let isEarly2000sTheme = true;
 
@@ -479,6 +644,97 @@ window.addEventListener('DOMContentLoaded', () => {
   }
 });
 
+// MEDIA MODAL FUNCTIONS
+function openMediaModal(mediaUrl, mediaType) {
+  currentMediaUrl = mediaUrl;
+  currentMediaType = mediaType;
+  
+  const modal = document.getElementById('mediaModal');
+  const container = document.getElementById('modalMediaContainer');
+  
+  container.innerHTML = '';
+  
+  if (mediaType.startsWith('image')) {
+    const img = document.createElement('img');
+    img.src = mediaUrl;
+    img.alt = 'Full preview';
+    img.style.maxWidth = '100%';
+    img.style.maxHeight = '95vh';
+    img.style.objectFit = 'contain';
+    container.appendChild(img);
+  } else if (mediaType.startsWith('video')) {
+    const video = document.createElement('video');
+    video.src = mediaUrl;
+    video.controls = true;
+    video.autoplay = true;
+    video.style.maxWidth = '100%';
+    video.style.maxHeight = '95vh';
+    video.style.objectFit = 'contain';
+    container.appendChild(video);
+  }
+  
+  modal.classList.add('active');
+  document.body.style.overflow = 'hidden'; // Prevent background scrolling
+}
+
+function closeMediaModal() {
+  const modal = document.getElementById('mediaModal');
+  modal.classList.remove('active');
+  document.body.style.overflow = ''; // Restore scrolling
+  
+  // Stop video playback
+  const video = modal.querySelector('video');
+  if (video) {
+    video.pause();
+    video.currentTime = 0;
+  }
+}
+
+function downloadMedia() {
+  if (!currentMediaUrl) return;
+  
+  // Create a temporary link element
+  const link = document.createElement('a');
+  link.href = currentMediaUrl;
+  
+  // Set filename based on media type and timestamp
+  const timestamp = new Date().getTime();
+  if (currentMediaType.startsWith('image')) {
+    link.download = `image_${timestamp}.jpg`;
+  } else if (currentMediaType.startsWith('video')) {
+    link.download = `video_${timestamp}.mp4`;
+  }
+  
+  // Trigger download
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+}
+
+// Close modal when clicking outside content
+document.getElementById('mediaModal').addEventListener('click', function(e) {
+  if (e.target === this) {
+    closeMediaModal();
+  }
+});
+
+// Close modal with Escape key
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') {
+    closeMediaModal();
+  }
+});
+
+// Get avatar initials from email
+function getAvatarInitials(email) {
+  if (!email) return '?';
+  const parts = email.split('@')[0];
+  if (parts.length >= 2) {
+    return parts.substring(0, 2).toUpperCase();
+  }
+  return parts.charAt(0).toUpperCase();
+}
+
 // SHOW PAGE FUNCTION
 function show(id){
   document.querySelectorAll('.page').forEach(p=>p.style.display='none');
@@ -493,7 +749,7 @@ function show(id){
 // AUTH STATE
 auth.onAuthStateChanged(user=>{
   if(user){
-    document.getElementById('userEmail').textContent = user.email + ' (AndreKriegman)';
+    document.getElementById('userEmail').textContent = user.email + (user.email === 'exoticslash3r@gmail.com' ? ' (AndreKriegman)' : '');
     document.getElementById('logoutBtn').style.display='inline-block';
     show('home');
     loadPosts();
@@ -589,28 +845,57 @@ function loadPosts(){
       // Format timestamp
       const time = p.time ? new Date(p.time.seconds * 1000).toLocaleString() : 'Just now';
       
+      // Check if author is exoticslash3r@gmail.com
+      const isAndre = p.author === 'exoticslash3r@gmail.com';
+      const tagClass = isAndre ? 'tag andre-tag' : 'tag regular-tag';
+      const tagText = isAndre ? 'AndreKriegman' : p.author.split('@')[0];
+      
       div.innerHTML=`
-        <strong>${p.title}</strong> 
-        <span class="tag">AndreKriegman</span>
+        <div class="author-info">
+          <div class="author-left">
+            <div class="author-avatar" style="background: ${isAndre ? 'linear-gradient(45deg, #ff0080, #ff8c00)' : 'linear-gradient(45deg, #667eea, #764ba2)'}">
+              ${getAvatarInitials(p.author)}
+            </div>
+            <span class="author-name">${p.author}</span>
+          </div>
+          <span class="${tagClass}">${tagText}</span>
+        </div>
+        <strong>${p.title}</strong>
         <small style="display:block;color:#666;margin:5px 0;">${time}</small>
       `;
       
       if(p.media){
         if(p.type.startsWith("image")){
-          div.innerHTML+=`<img src="${p.media}" alt="${p.title}" loading="lazy">`;
+          const img = document.createElement('img');
+          img.src = p.media;
+          img.alt = p.title;
+          img.className = 'media-preview';
+          img.loading = 'lazy';
+          img.style.cursor = 'zoom-in';
+          img.onclick = () => openMediaModal(p.media, p.type);
+          div.appendChild(img);
         }else{
-          div.innerHTML+=`<video src="${p.media}" controls></video>`;
+          const video = document.createElement('video');
+          video.src = p.media;
+          video.controls = true;
+          video.className = 'media-preview';
+          video.style.cursor = 'pointer';
+          video.onclick = () => openMediaModal(p.media, p.type);
+          div.appendChild(video);
         }
       }
       
-      // DELETE BUTTON IF OWNER
-      if(auth.currentUser && auth.currentUser.email==='exoticslash3r@gmail.com'){
-        const del=document.createElement("button");
-        del.textContent="Delete";
-        del.className="delete";
-        del.onclick=(e)=>{
+      // DELETE BUTTON IF OWNER OR ADMIN
+      const currentUser = auth.currentUser;
+      if (currentUser && (currentUser.email === p.author || currentUser.email === 'exoticslash3r@gmail.com')) {
+        const del = document.createElement('button');
+        del.textContent = 'Delete';
+        del.className = 'delete';
+        del.onclick = (e) => {
           e.stopPropagation();
-          if(confirm("Delete this post?")) db.collection("posts").doc(d.id).delete();
+          if (confirm('Delete this post?')) {
+            db.collection('posts').doc(d.id).delete();
+          }
         };
         div.appendChild(del);
       }
@@ -619,7 +904,7 @@ function loadPosts(){
     });
   }, error => {
     postsContainer.innerHTML='<p style="text-align:center;padding:40px;color:#e53e3e;">Error loading posts. Please try again.</p>';
-    console.error("Error loading posts:", error);
+    console.error('Error loading posts:', error);
   });
 }
 
