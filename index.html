@@ -69,14 +69,25 @@ body {
   margin-top:10px;
 }
 
-/* COMMENTS */
+/* COMMENTS SECTION */
+#comments {
+  border-top:1px solid #ccc;
+  margin-top:10px;
+  max-height:200px; /* scrollable height */
+  overflow-y:auto;
+  padding-top:10px;
+}
 .comment {
-  border-top:1px solid #ddd;
-  padding:5px 0;
+  border-bottom:1px solid #eee;
+  padding:6px 0;
   font-size:14px;
 }
+
+/* TEXTAREA */
 textarea {
   width:100%;
+  resize:none;
+  box-sizing:border-box;
 }
 </style>
 </head>
@@ -105,13 +116,13 @@ textarea {
   <button onclick="show('home')">Cancel</button>
 </div>
 
-<!-- FULL PREVIEW -->
+<!-- FULL POST VIEW -->
 <div id="viewer" class="page">
   <h2 id="viewTitle"></h2>
   <div id="viewMedia"></div>
 
   <h3>Comments</h3>
-  <textarea id="commentText" placeholder="Write comment"></textarea><br>
+  <textarea id="commentText" placeholder="Write a comment"></textarea><br>
   <button onclick="sendComment()">Comment</button>
 
   <div id="comments"></div>
