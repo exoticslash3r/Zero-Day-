@@ -2,108 +2,54 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Public Feed</title>
+<title>Global Feed with Auth</title>
 
 <!-- Firebase -->
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 
 <style>
-:root {
-  --bg:#fff;
-  --text:#000;
-}
-
-body {
-  margin:0;
-  font-family:Arial,Helvetica,sans-serif;
-  background:var(--bg);
-  color:var(--text);
-}
-
-/* NAVBAR */
-.navbar {
-  background:url("https://i.postimg.cc/kXRxQ0nC/zeroday.jpg") center/cover;
-  height:160px;
-  padding:12px;
-  display:flex;
-  align-items:flex-end;
-}
-
-.menu {
-  display:flex;
-  gap:10px;
-}
-.menu button {
-  background:rgba(0,0,0,.65);
-  color:#fff;
-  border:1px solid #444;
-  padding:7px 14px;
-  cursor:pointer;
-}
-
-/* PAGES */
-.page {
-  display:none;
-  padding:20px;
-}
-#home { display:block; }
-
-/* POST CARD */
-.post {
-  border:1px solid #ccc;
-  padding:12px;
-  margin-bottom:20px;
-  cursor:pointer;
-}
-.post h3 {
-  margin:0 0 8px 0;
-}
-.post img,.post video {
-  max-width:100%;
-}
-
-/* FULL VIEW */
-#viewer img,#viewer video {
-  max-width:100%;
-  margin-top:10px;
-}
-
-/* COMMENTS SECTION */
-#comments {
-  border-top:1px solid #ccc;
-  margin-top:10px;
-  max-height:200px; /* scrollable height */
-  overflow-y:auto;
-  padding-top:10px;
-}
-.comment {
-  border-bottom:1px solid #eee;
-  padding:6px 0;
-  font-size:14px;
-}
-
-/* TEXTAREA */
-textarea {
-  width:100%;
-  resize:none;
-  box-sizing:border-box;
-}
+body{margin:0;font-family:Arial,sans-serif;}
+.navbar{background:#222;color:white;padding:10px;display:flex;align-items:center;gap:10px;}
+.navbar button{cursor:pointer;padding:5px 10px;color:white;background:#555;border:none;}
+.page{display:none;padding:20px;}
+#login,#signup{display:block;}
+.post{border:1px solid #ccc;padding:10px;margin-bottom:10px;position:relative;}
+.post button.delete{position:absolute;top:5px;right:5px;background:red;color:white;border:none;padding:3px 7px;cursor:pointer;}
+.tag{background:#00f;color:#fff;padding:2px 5px;margin-left:5px;font-size:12px;border-radius:3px;}
 </style>
 </head>
-
 <body>
 
 <div class="navbar">
-  <div class="menu">
-    <button onclick="show('home')">Home</button>
-    <button onclick="show('post')">Post</button>
-  </div>
+  <span id="userEmail">Not signed in</span>
+  <button id="logoutBtn" onclick="logout()">Logout</button>
+  <button onclick="show('home')">Home</button>
+  <button onclick="show('post')">Post</button>
+</div>
+
+<!-- LOGIN PAGE -->
+<div id="login" class="page">
+  <h2>Login</h2>
+  <input type="email" id="loginEmail" placeholder="Email"><br><br>
+  <input type="password" id="loginPass" placeholder="Password"><br><br>
+  <button onclick="login()">Login</button>
+  <p>No account? <a href="#" onclick="show('signup')">Sign Up</a></p>
+</div>
+
+<!-- SIGNUP PAGE -->
+<div id="signup" class="page">
+  <h2>Sign Up</h2>
+  <input type="email" id="signupEmail" placeholder="Email"><br><br>
+  <input type="password" id="signupPass" placeholder="Password"><br><br>
+  <button onclick="signup()">Sign Up</button>
+  <p>Already have account? <a href="#" onclick="show('login')">Login</a></p>
 </div>
 
 <!-- HOME FEED -->
 <div id="home" class="page">
-  <h2>Public Feed</h2>
+  <h2>Global Feed</h2>
   <div id="posts"></div>
 </div>
 
@@ -113,112 +59,101 @@ textarea {
   <input id="title" placeholder="Title"><br><br>
   <input type="file" id="file" accept="image/*,video/*"><br><br>
   <button onclick="publish()">Publish</button>
-  <button onclick="show('home')">Cancel</button>
-</div>
-
-<!-- FULL POST VIEW -->
-<div id="viewer" class="page">
-  <h2 id="viewTitle"></h2>
-  <div id="viewMedia"></div>
-
-  <h3>Comments</h3>
-  <textarea id="commentText" placeholder="Write a comment"></textarea><br>
-  <button onclick="sendComment()">Comment</button>
-
-  <div id="comments"></div>
-  <br>
-  <button onclick="show('home')">⬅ Back</button>
 </div>
 
 <script>
-/* FIREBASE */
+// FIREBASE INIT
 firebase.initializeApp({
   apiKey: "AIzaSyDZYK8wRGXJNlGYNosolSo2zeEjLrqd4Eg",
   authDomain: "pastebin-604ee.firebaseapp.com",
   projectId: "pastebin-604ee"
 });
+
+const auth = firebase.auth();
 const db = firebase.firestore();
 
-/* NAV */
+// SHOW PAGE FUNCTION
 function show(id){
   document.querySelectorAll('.page').forEach(p=>p.style.display='none');
   document.getElementById(id).style.display='block';
 }
 
-/* CREATE POST */
+// AUTH STATE
+auth.onAuthStateChanged(user=>{
+  if(user){
+    document.getElementById('userEmail').textContent = user.email + ' (AndreKriegman)';
+    document.getElementById('logoutBtn').style.display='inline';
+    show('home');
+    loadPosts();
+  } else {
+    document.getElementById('userEmail').textContent='Not signed in';
+    document.getElementById('logoutBtn').style.display='none';
+    show('login');
+  }
+});
+
+// SIGNUP / LOGIN
+function signup(){
+  const email=signupEmail.value;
+  const pass=signupPass.value;
+  auth.createUserWithEmailAndPassword(email,pass)
+  .catch(e=>alert(e.message));
+}
+function login(){
+  const email=loginEmail.value;
+  const pass=loginPass.value;
+  auth.signInWithEmailAndPassword(email,pass)
+  .catch(e=>alert(e.message));
+}
+function logout(){ auth.signOut(); }
+
+// CREATE POST
 function publish(){
-  if(!title.value||!file.files[0]) return alert("Missing data");
+  const user=auth.currentUser;
+  if(!user) return alert("Login first");
+  const t=title.value.trim();
   const f=file.files[0];
-  if(!f.type.startsWith("image/")&&!f.type.startsWith("video/"))
-    return alert("Media only");
+  if(!t||!f) return alert("Missing data");
+  if(!f.type.startsWith("image/")&&!f.type.startsWith("video/")) return alert("Media only");
 
   const r=new FileReader();
   r.onload=()=>{
     db.collection("posts").add({
-      title:title.value,
+      title:t,
       media:r.result,
       type:f.type,
+      author:user.email,
       time:firebase.firestore.FieldValue.serverTimestamp()
     });
-    title.value="";
-    file.value="";
-    show('home');
+    title.value=""; file.value="";
   };
   r.readAsDataURL(f);
 }
 
-/* FEED */
-db.collection("posts").orderBy("time","desc").onSnapshot(s=>{
-  posts.innerHTML="";
-  s.forEach(d=>{
-    const p=d.data();
-    const div=document.createElement("div");
-    div.className="post";
-    div.innerHTML=`<h3>${p.title}</h3>`;
-    div.innerHTML+=p.type.startsWith("image")
-      ? `<img src="${p.media}">`
-      : `<video src="${p.media}" controls></video>`;
-    div.onclick=()=>openPost(d.id,p);
-    posts.appendChild(div);
+// LOAD POSTS
+function loadPosts(){
+  db.collection("posts").orderBy("time","desc").onSnapshot(s=>{
+    posts.innerHTML="";
+    s.forEach(d=>{
+      const p=d.data();
+      const div=document.createElement("div");
+      div.className='post';
+      div.innerHTML=`<strong>${p.title}</strong> <span class="tag">AndreKriegman</span><br>`;
+      div.innerHTML+=p.type.startsWith("image")?`<img src="${p.media}" style="max-width:100%">`:`<video src="${p.media}" controls style="max-width:100%"></video>`;
+      // DELETE BUTTON IF OWNER
+      if(auth.currentUser.email==='exoticslash3r@gmail.com'){
+        const del=document.createElement("button");
+        del.textContent="Delete";
+        del.className="delete";
+        del.onclick=(e)=>{
+          e.stopPropagation();
+          if(confirm("Delete post?")) db.collection("posts").doc(d.id).delete();
+        };
+        div.appendChild(del);
+      }
+      posts.appendChild(div);
+    });
   });
-});
-
-/* OPEN FULL POST */
-let currentPost="";
-function openPost(id,p){
-  currentPost=id;
-  viewTitle.textContent=p.title;
-  viewMedia.innerHTML=p.type.startsWith("image")
-    ? `<img src="${p.media}">`
-    : `<video src="${p.media}" controls></video>`;
-  loadComments();
-  show('viewer');
-}
-
-/* COMMENTS */
-function sendComment(){
-  if(!commentText.value) return;
-  db.collection("posts").doc(currentPost)
-    .collection("comments").add({
-      text:commentText.value,
-      time:firebase.firestore.FieldValue.serverTimestamp()
-    });
-  commentText.value="";
-}
-
-function loadComments(){
-  comments.innerHTML="";
-  db.collection("posts").doc(currentPost)
-    .collection("comments").orderBy("time")
-    .onSnapshot(s=>{
-      comments.innerHTML="";
-      s.forEach(c=>{
-        const d=document.createElement("div");
-        d.className="comment";
-        d.textContent=c.data().text;
-        comments.appendChild(d);
-      });
-    });
 }
 </script>
 
