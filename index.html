@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Global Feed with Auth</title>
 
 <!-- Firebase -->
@@ -10,18 +11,177 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 
 <style>
-/* Early 2000s Retro Theme */
-body {
+/* Reset and Base */
+* {
   margin: 0;
-  font-family: "Courier New", Courier, monospace;
-  background: #c0c0c0;
-  color: #000080;
+  padding: 0;
+  box-sizing: border-box;
 }
 
+body {
+  font-family: Arial, sans-serif;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #333;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* Scrollbar Styling (Desktop) */
+::-webkit-scrollbar {
+  width: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(45deg, #ff0080, #ff8c00);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(45deg, #ff8c00, #ff0080);
+}
+
+/* Container */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* THEME STYLES */
+body.normal-theme {
+  background: #f5f5f5;
+  color: #333;
+}
+
+body.early2000s-theme {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #000;
+  font-family: "Comic Sans MS", "Trebuchet MS", Arial, sans-serif;
+}
+
+.early2000s-theme .navbar {
+  background: linear-gradient(45deg, #ff0080, #ff8c00);
+  border: 3px solid #000;
+  border-radius: 0 0 15px 15px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+}
+
+.early2000s-theme .navbar button {
+  background: linear-gradient(45deg, #00ff00, #00ccff);
+  color: #000;
+  border: 2px solid #000;
+  font-weight: bold;
+  text-shadow: 1px 1px 0 #fff;
+}
+
+.early2000s-theme .navbar button:hover {
+  background: linear-gradient(45deg, #00ccff, #00ff00);
+  transform: scale(1.05);
+}
+
+.early2000s-theme .page {
+  background: #fff;
+  border: 3px dashed #ff0080;
+  border-radius: 15px;
+  box-shadow: 8px 8px 0 #000;
+}
+
+.early2000s-theme .post {
+  background: linear-gradient(135deg, #ffffcc, #ccffff);
+  border: 2px solid #000;
+  border-radius: 10px;
+  box-shadow: 4px 4px 0 #666;
+}
+
+.early2000s-theme .tag {
+  background: linear-gradient(45deg, #ff00ff, #ffff00);
+  color: #000;
+  font-weight: bold;
+  animation: blink 2s infinite;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+.early2000s-theme input, .early2000s-theme button:not(.navbar button) {
+  border: 2px solid #000;
+  border-radius: 5px;
+  background: #ffffcc;
+}
+
+.early2000s-theme h2 {
+  background: linear-gradient(45deg, #ff0080, #00ccff);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  text-shadow: 2px 2px 0 #000;
+}
+
+/* Normal Theme */
+.normal-theme .navbar {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-bottom: 2px solid #ddd;
+}
+
+.normal-theme .navbar button {
+  background: #4a5568;
+  color: white;
+  transition: all 0.3s ease;
+}
+
+.normal-theme .navbar button:hover {
+  background: #2d3748;
+  transform: translateY(-2px);
+}
+
+.normal-theme .page {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.normal-theme .post {
+  background: #f8f9fa;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  transition: transform 0.2s;
+}
+
+.normal-theme .post:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.normal-theme .tag {
+  background: #4299e1;
+  color: white;
+}
+
+/* Navbar */
 .navbar {
-  background: #000080;
-  color: #fff;
-  padding: 10px;
+  color: white;
+  padding: 15px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 15px;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.navbar-left, .navbar-right {
   display: flex;
   align-items: center;
   gap: 10px;
@@ -30,143 +190,253 @@ body {
 
 .navbar button {
   cursor: pointer;
-  padding: 5px 10px;
-  color: #fff;
-  background: #800000;
-  border: 1px solid #fff;
-  font-weight: bold;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 600;
+  transition: all 0.3s ease;
 }
 
 .navbar button:hover {
-  background: #ff0000;
+  opacity: 0.9;
 }
 
+#themeToggle {
+  background: linear-gradient(45deg, #ff0080, #ff8c00);
+  color: white;
+}
+
+#userEmail {
+  font-weight: bold;
+  padding: 5px 10px;
+  background: rgba(255,255,255,0.2);
+  border-radius: 4px;
+}
+
+/* Pages */
 .page {
   display: none;
-  padding: 20px;
+  padding: 25px;
+  margin-top: 20px;
+  min-height: calc(100vh - 100px);
 }
 
 #login, #signup {
-  display: block;
+  max-width: 400px;
+  margin: 40px auto;
 }
 
-input {
-  padding: 5px;
-  border: 1px solid #000080;
-  margin-bottom: 10px;
+/* Form Elements */
+input, button:not(.navbar button) {
   width: 100%;
-  max-width: 300px;
+  padding: 12px;
+  margin: 8px 0;
+  font-size: 16px;
 }
 
-button {
-  font-family: "Courier New", monospace;
+button:not(.navbar button) {
+  background: #4a5568;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background 0.3s ease;
+}
+
+button:not(.navbar button):hover {
+  background: #2d3748;
+}
+
+a {
+  color: #4299e1;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* Posts */
+#posts {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+  padding: 20px;
+  overflow-y: auto;
+  max-height: calc(100vh - 200px);
 }
 
 .post {
-  border: 2px solid #000080;
-  padding: 10px;
-  margin-bottom: 10px;
+  padding: 15px;
   position: relative;
-  background: #fffacd;
+  display: flex;
+  flex-direction: column;
 }
 
-.post button.delete {
-  position: absolute;
-  top: 5px;
-  right: 5px;
-  background: red;
-  color: white;
-  border: none;
-  padding: 3px 7px;
-  cursor: pointer;
+.post img, .post video {
+  max-width: 100%;
+  height: auto;
+  border-radius: 4px;
+  margin-top: 10px;
+}
+
+.post strong {
+  font-size: 18px;
+  margin-bottom: 5px;
+  display: block;
 }
 
 .tag {
   background: #00f;
   color: #fff;
-  padding: 2px 5px;
-  margin-left: 5px;
+  padding: 3px 8px;
   font-size: 12px;
-  border-radius: 3px;
+  border-radius: 12px;
+  display: inline-block;
+  margin-left: 10px;
 }
 
-/* Scrollable feed */
-#posts {
-  max-height: 70vh;
-  overflow-y: auto;
-  padding-right: 10px;
-}
-
-/* Responsive media */
-img, video {
-  max-width: 100%;
-  height: auto;
-  display: block;
-  margin-top: 10px;
-}
-
-/* Early 2000s buttons and links style */
-a {
-  color: #000080;
-  text-decoration: underline;
-}
-
-a:hover {
-  color: #ff0000;
+.post button.delete {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: #e53e3e;
+  color: white;
+  border: none;
+  padding: 5px 10px;
   cursor: pointer;
+  border-radius: 4px;
+  font-size: 12px;
 }
 
-/* Mobile responsiveness */
-@media (max-width: 600px) {
+.post button.delete:hover {
+  background: #c53030;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .container {
+    padding: 10px;
+  }
+  
   .navbar {
     flex-direction: column;
-    align-items: flex-start;
+    padding: 10px;
   }
-  input {
-    max-width: 100%;
+  
+  .navbar-left, .navbar-right {
+    width: 100%;
+    justify-content: center;
   }
+  
+  #posts {
+    grid-template-columns: 1fr;
+    padding: 10px;
+    max-height: none;
+    overflow-y: visible;
+  }
+  
+  .page {
+    padding: 15px;
+    margin-top: 10px;
+  }
+  
+  #themeToggle {
+    order: -1;
+    margin-bottom: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .navbar button {
+    padding: 6px 12px;
+    font-size: 12px;
+  }
+  
+  #userEmail {
+    font-size: 14px;
+    text-align: center;
+    margin-bottom: 10px;
+  }
+  
+  input, button:not(.navbar button) {
+    padding: 10px;
+    font-size: 14px;
+  }
+  
+  .post {
+    padding: 10px;
+  }
+}
+
+/* Loading Animation */
+@keyframes loading {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.loading {
+  border: 4px solid rgba(255,255,255,0.3);
+  border-radius: 50%;
+  border-top: 4px solid #4299e1;
+  width: 40px;
+  height: 40px;
+  animation: loading 1s linear infinite;
+  margin: 20px auto;
 }
 </style>
 </head>
-<body>
+<body class="early2000s-theme">
 
-<div class="navbar">
-  <span id="userEmail">Not signed in</span>
-  <button id="logoutBtn" onclick="logout()">Logout</button>
-  <button onclick="show('home')">Home</button>
-  <button onclick="show('post')">Post</button>
-</div>
+<div class="container">
+  <div class="navbar">
+    <div class="navbar-left">
+      <span id="userEmail">Not signed in</span>
+      <button id="logoutBtn" onclick="logout()">Logout</button>
+    </div>
+    <div class="navbar-right">
+      <button id="themeToggle" onclick="toggleTheme()">Switch to Normal Theme</button>
+      <button onclick="show('home')">Home</button>
+      <button onclick="show('post')">Post</button>
+    </div>
+  </div>
 
-<!-- LOGIN PAGE -->
-<div id="login" class="page">
-  <h2>Login</h2>
-  <input type="email" id="loginEmail" placeholder="Email"><br>
-  <input type="password" id="loginPass" placeholder="Password"><br>
-  <button onclick="login()">Login</button>
-  <p>No account? <a href="#" onclick="show('signup')">Sign Up</a></p>
-</div>
+  <!-- LOGIN PAGE -->
+  <div id="login" class="page">
+    <h2>Login</h2>
+    <input type="email" id="loginEmail" placeholder="Email">
+    <input type="password" id="loginPass" placeholder="Password">
+    <button onclick="login()">Login</button>
+    <p>No account? <a href="#" onclick="show('signup')">Sign Up</a></p>
+  </div>
 
-<!-- SIGNUP PAGE -->
-<div id="signup" class="page">
-  <h2>Sign Up</h2>
-  <input type="email" id="signupEmail" placeholder="Email"><br>
-  <input type="password" id="signupPass" placeholder="Password"><br>
-  <button onclick="signup()">Sign Up</button>
-  <p>Already have account? <a href="#" onclick="show('login')">Login</a></p>
-</div>
+  <!-- SIGNUP PAGE -->
+  <div id="signup" class="page">
+    <h2>Sign Up</h2>
+    <input type="email" id="signupEmail" placeholder="Email">
+    <input type="password" id="signupPass" placeholder="Password">
+    <button onclick="signup()">Sign Up</button>
+    <p>Already have account? <a href="#" onclick="show('login')">Login</a></p>
+  </div>
 
-<!-- HOME FEED -->
-<div id="home" class="page">
-  <h2>Global Feed</h2>
-  <div id="posts"></div>
-</div>
+  <!-- HOME FEED -->
+  <div id="home" class="page">
+    <h2>Global Feed</h2>
+    <div id="posts">
+      <div class="loading"></div>
+    </div>
+  </div>
 
-<!-- CREATE POST -->
-<div id="post" class="page">
-  <h2>Create Post</h2>
-  <input id="title" placeholder="Title"><br>
-  <input type="file" id="file" accept="image/*,video/*"><br>
-  <button onclick="publish()">Publish</button>
+  <!-- CREATE POST -->
+  <div id="post" class="page">
+    <h2>Create Post</h2>
+    <input id="title" placeholder="Title">
+    <input type="file" id="file" accept="image/*,video/*">
+    <button onclick="publish()">Publish</button>
+  </div>
 </div>
 
 <script>
@@ -180,17 +450,51 @@ firebase.initializeApp({
 const auth = firebase.auth();
 const db = firebase.firestore();
 
+// THEME MANAGEMENT
+let isEarly2000sTheme = true;
+
+function toggleTheme() {
+  const body = document.body;
+  const toggleBtn = document.getElementById('themeToggle');
+  
+  if (isEarly2000sTheme) {
+    body.classList.remove('early2000s-theme');
+    body.classList.add('normal-theme');
+    toggleBtn.textContent = 'Switch to 2000s Theme';
+  } else {
+    body.classList.remove('normal-theme');
+    body.classList.add('early2000s-theme');
+    toggleBtn.textContent = 'Switch to Normal Theme';
+  }
+  
+  isEarly2000sTheme = !isEarly2000sTheme;
+  localStorage.setItem('theme', isEarly2000sTheme ? 'early2000s' : 'normal');
+}
+
+// Load saved theme
+window.addEventListener('DOMContentLoaded', () => {
+  const savedTheme = localStorage.getItem('theme');
+  if (savedTheme === 'normal') {
+    toggleTheme(); // Switch to normal theme
+  }
+});
+
 // SHOW PAGE FUNCTION
 function show(id){
   document.querySelectorAll('.page').forEach(p=>p.style.display='none');
   document.getElementById(id).style.display='block';
+  
+  // Load posts when showing home
+  if (id === 'home') {
+    loadPosts();
+  }
 }
 
 // AUTH STATE
 auth.onAuthStateChanged(user=>{
   if(user){
     document.getElementById('userEmail').textContent = user.email + ' (AndreKriegman)';
-    document.getElementById('logoutBtn').style.display='inline';
+    document.getElementById('logoutBtn').style.display='inline-block';
     show('home');
     loadPosts();
   } else {
@@ -202,27 +506,45 @@ auth.onAuthStateChanged(user=>{
 
 // SIGNUP / LOGIN
 function signup(){
-  const email=signupEmail.value;
-  const pass=signupPass.value;
+  const email=document.getElementById('signupEmail').value;
+  const pass=document.getElementById('signupPass').value;
   auth.createUserWithEmailAndPassword(email,pass)
+  .then(() => {
+    alert('Account created successfully!');
+  })
   .catch(e=>alert(e.message));
 }
+
 function login(){
-  const email=loginEmail.value;
-  const pass=loginPass.value;
+  const email=document.getElementById('loginEmail').value;
+  const pass=document.getElementById('loginPass').value;
   auth.signInWithEmailAndPassword(email,pass)
+  .then(() => {
+    alert('Logged in successfully!');
+  })
   .catch(e=>alert(e.message));
 }
-function logout(){ auth.signOut(); }
+
+function logout(){ 
+  if(confirm("Are you sure you want to logout?")) {
+    auth.signOut();
+  }
+}
 
 // CREATE POST
 function publish(){
   const user=auth.currentUser;
   if(!user) return alert("Login first");
-  const t=title.value.trim();
-  const f=file.files[0];
+  const t=document.getElementById('title').value.trim();
+  const f=document.getElementById('file').files[0];
   if(!t||!f) return alert("Missing data");
   if(!f.type.startsWith("image/")&&!f.type.startsWith("video/")) return alert("Media only");
+
+  // Show loading
+  const publishBtn = document.querySelector('#post button');
+  const originalText = publishBtn.textContent;
+  publishBtn.textContent = 'Uploading...';
+  publishBtn.disabled = true;
 
   const r=new FileReader();
   r.onload=()=>{
@@ -232,36 +554,79 @@ function publish(){
       type:f.type,
       author:user.email,
       time:firebase.firestore.FieldValue.serverTimestamp()
+    }).then(() => {
+      document.getElementById('title').value=""; 
+      document.getElementById('file').value="";
+      alert('Post published successfully!');
+      show('home');
+    }).catch(e => {
+      alert('Error: ' + e.message);
+    }).finally(() => {
+      publishBtn.textContent = originalText;
+      publishBtn.disabled = false;
     });
-    title.value=""; file.value="";
   };
   r.readAsDataURL(f);
 }
 
 // LOAD POSTS
 function loadPosts(){
+  const postsContainer = document.getElementById('posts');
+  postsContainer.innerHTML = '<div class="loading"></div>';
+  
   db.collection("posts").orderBy("time","desc").onSnapshot(s=>{
-    posts.innerHTML="";
+    if(s.empty){
+      postsContainer.innerHTML='<p style="text-align:center;padding:40px;color:#666;">No posts yet. Be the first to post!</p>';
+      return;
+    }
+    
+    postsContainer.innerHTML="";
     s.forEach(d=>{
       const p=d.data();
       const div=document.createElement("div");
       div.className='post';
-      div.innerHTML=`<strong>${p.title}</strong> <span class="tag">AndreKriegman</span><br>`;
-      div.innerHTML+=p.type.startsWith("image")?`<img src="${p.media}">`:`<video src="${p.media}" controls></video>`;
-      if(auth.currentUser.email==='exoticslash3r@gmail.com'){
+      
+      // Format timestamp
+      const time = p.time ? new Date(p.time.seconds * 1000).toLocaleString() : 'Just now';
+      
+      div.innerHTML=`
+        <strong>${p.title}</strong> 
+        <span class="tag">AndreKriegman</span>
+        <small style="display:block;color:#666;margin:5px 0;">${time}</small>
+      `;
+      
+      if(p.media){
+        if(p.type.startsWith("image")){
+          div.innerHTML+=`<img src="${p.media}" alt="${p.title}" loading="lazy">`;
+        }else{
+          div.innerHTML+=`<video src="${p.media}" controls></video>`;
+        }
+      }
+      
+      // DELETE BUTTON IF OWNER
+      if(auth.currentUser && auth.currentUser.email==='exoticslash3r@gmail.com'){
         const del=document.createElement("button");
         del.textContent="Delete";
         del.className="delete";
         del.onclick=(e)=>{
           e.stopPropagation();
-          if(confirm("Delete post?")) db.collection("posts").doc(d.id).delete();
+          if(confirm("Delete this post?")) db.collection("posts").doc(d.id).delete();
         };
         div.appendChild(del);
       }
-      posts.appendChild(div);
+      
+      postsContainer.appendChild(div);
     });
+  }, error => {
+    postsContainer.innerHTML='<p style="text-align:center;padding:40px;color:#e53e3e;">Error loading posts. Please try again.</p>';
+    console.error("Error loading posts:", error);
   });
 }
+
+// Initialize
+document.addEventListener('DOMContentLoaded', () => {
+  show('login');
+});
 </script>
 
 </body>
