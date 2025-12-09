@@ -9,6 +9,7 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
 
 <style>
 /* Reset and Base */
@@ -518,6 +519,42 @@ body.bloody-red-theme {
   display: block;
 }
 
+.avatar-upload-area {
+  text-align: center;
+  margin: 15px 0;
+  padding: 20px;
+  border: 2px dashed #ff0000;
+  border-radius: 10px;
+  background: rgba(74, 0, 0, 0.5);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.avatar-upload-area:hover {
+  background: rgba(74, 0, 0, 0.7);
+  border-color: #ff4444;
+}
+
+.avatar-upload-area.dragover {
+  background: rgba(255, 0, 0, 0.2);
+  border-color: #ff6666;
+}
+
+.upload-icon {
+  font-size: 40px;
+  color: #ff6666;
+  margin-bottom: 10px;
+}
+
+.upload-text {
+  color: #ff9999;
+  font-size: 14px;
+}
+
+.upload-text strong {
+  color: #ff6666;
+}
+
 /* Avatar Selection */
 .avatar-options {
   display: grid;
@@ -533,6 +570,7 @@ body.bloody-red-theme {
   border: 2px solid transparent;
   cursor: pointer;
   transition: all 0.3s ease;
+  object-fit: cover;
 }
 
 .avatar-option:hover {
@@ -550,6 +588,7 @@ body.bloody-red-theme {
   display: flex;
   gap: 10px;
   margin: 15px 0;
+  flex-wrap: wrap;
 }
 
 .color-option {
@@ -568,6 +607,59 @@ body.bloody-red-theme {
 .color-option.selected {
   border-color: white;
   box-shadow: 0 0 10px rgba(255, 255, 255, 0.7);
+}
+
+/* Avatar Upload Preview */
+.avatar-preview-container {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  margin: 0 auto 20px;
+}
+
+.avatar-preview-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  cursor: pointer;
+}
+
+.avatar-preview-container:hover .avatar-preview-overlay {
+  opacity: 1;
+}
+
+.avatar-preview-overlay span {
+  color: white;
+  font-size: 12px;
+  text-align: center;
+  padding: 10px;
+}
+
+/* Upload Progress */
+.upload-progress {
+  width: 100%;
+  height: 10px;
+  background: rgba(74, 0, 0, 0.5);
+  border-radius: 5px;
+  margin: 10px 0;
+  overflow: hidden;
+  display: none;
+}
+
+.upload-progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, #8b0000, #ff0000);
+  width: 0%;
+  transition: width 0.3s ease;
 }
 
 /* Pages */
@@ -772,6 +864,10 @@ a:hover {
   .avatar-options {
     grid-template-columns: repeat(3, 1fr);
   }
+  
+  .profile-modal-content {
+    padding: 20px;
+  }
 }
 
 @media (max-width: 480px) {
@@ -798,6 +894,10 @@ a:hover {
   .avatar-options {
     grid-template-columns: repeat(2, 1fr);
   }
+  
+  .color-picker {
+    justify-content: center;
+  }
 }
 
 /* Loading Animation */
@@ -814,6 +914,46 @@ a:hover {
   height: 40px;
   animation: loading 1s linear infinite;
   margin: 20px auto;
+}
+
+/* File Input Customization */
+.custom-file-input {
+  position: relative;
+  overflow: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+.custom-file-input input[type="file"] {
+  position: absolute;
+  left: 0;
+  top: 0;
+  opacity: 0;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+}
+
+.file-input-label {
+  display: block;
+  padding: 12px;
+  background: rgba(74, 0, 0, 0.8);
+  border: 2px dashed #ff0000;
+  border-radius: 5px;
+  text-align: center;
+  color: #ff9999;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.file-input-label:hover {
+  background: rgba(74, 0, 0, 0.9);
+  border-color: #ff4444;
+}
+
+.file-input-label.dragover {
+  background: rgba(255, 0, 0, 0.2);
+  border-color: #ff6666;
 }
 </style>
 </head>
@@ -835,7 +975,30 @@ a:hover {
     <h2>Customize Profile</h2>
     
     <div class="profile-form">
-      <img id="avatarPreview" class="profile-avatar-preview" src="" alt="Avatar Preview">
+      <!-- Avatar Preview with Upload Overlay -->
+      <div class="avatar-preview-container">
+        <img id="avatarPreview" class="profile-avatar-preview" src="" alt="Avatar Preview">
+        <div class="avatar-preview-overlay" onclick="document.getElementById('avatarUpload').click()">
+          <span>Click to<br>Upload Image</span>
+        </div>
+      </div>
+      
+      <!-- Hidden file input -->
+      <input type="file" id="avatarUpload" accept="image/*" style="display: none;" onchange="handleAvatarUpload(event)">
+      
+      <!-- Upload Progress -->
+      <div class="upload-progress" id="uploadProgress">
+        <div class="upload-progress-bar" id="uploadProgressBar"></div>
+      </div>
+      
+      <!-- Upload Area -->
+      <div class="avatar-upload-area" id="avatarUploadArea" onclick="document.getElementById('avatarUpload').click()">
+        <div class="upload-icon">📷</div>
+        <div class="upload-text">
+          <strong>Click to upload</strong> or drag and drop<br>
+          <small>PNG, JPG, GIF up to 5MB</small>
+        </div>
+      </div>
       
       <label>Username:</label>
       <input type="text" id="profileUsername" placeholder="Enter username">
@@ -852,15 +1015,15 @@ a:hover {
         <div class="color-option" style="background: #cc0000;" onclick="selectColor('#cc0000')"></div>
       </div>
       
-      <label>Choose Avatar:</label>
+      <label>Or choose from default avatars:</label>
       <div class="avatar-options" id="avatarOptions">
         <!-- Avatars will be populated by JavaScript -->
       </div>
       
-      <label>Custom Avatar URL:</label>
-      <input type="text" id="customAvatarUrl" placeholder="Or paste image URL">
+      <label>Custom Avatar URL (optional):</label>
+      <input type="text" id="customAvatarUrl" placeholder="Or paste image URL here">
       
-      <button onclick="saveProfile()" style="margin-top: 20px;">Save Profile</button>
+      <button onclick="saveProfile()" style="margin-top: 20px;" id="saveProfileBtn">Save Profile</button>
     </div>
   </div>
 </div>
@@ -916,7 +1079,10 @@ a:hover {
   <div id="post" class="page">
     <h2>Create Post</h2>
     <input id="title" placeholder="Title">
-    <input type="file" id="file" accept="image/*,video/*">
+    <div class="custom-file-input">
+      <input type="file" id="file" accept="image/*,video/*">
+      <label class="file-input-label" for="file">📁 Choose file or drag and drop</label>
+    </div>
     <button onclick="publish()">Publish</button>
   </div>
 </div>
@@ -926,11 +1092,13 @@ a:hover {
 firebase.initializeApp({
   apiKey: "AIzaSyDZYK8wRGXJNlGYNosolSo2zeEjLrqd4Eg",
   authDomain: "pastebin-604ee.firebaseapp.com",
-  projectId: "pastebin-604ee"
+  projectId: "pastebin-604ee",
+  storageBucket: "pastebin-604ee.appspot.com"
 });
 
 const auth = firebase.auth();
 const db = firebase.firestore();
+const storage = firebase.storage();
 
 // Variables for media modal
 let currentMediaUrl = '';
@@ -955,6 +1123,10 @@ const defaultAvatars = [
   'https://api.dicebear.com/7.x/avataaars/svg?seed=blood5&backgroundColor=b6e3f4',
   'https://api.dicebear.com/7.x/avataaars/svg?seed=blood6&backgroundColor=b6e3f4'
 ];
+
+// Uploaded avatar file
+let uploadedAvatarFile = null;
+let uploadedAvatarUrl = '';
 
 // THEME MANAGEMENT
 let isBloodyRedTheme = true;
@@ -984,6 +1156,7 @@ window.addEventListener('DOMContentLoaded', () => {
     toggleTheme(); // Switch to normal theme
   }
   loadAvatarOptions();
+  setupDragAndDrop();
 });
 
 // Load avatar options
@@ -992,13 +1165,176 @@ function loadAvatarOptions() {
   container.innerHTML = '';
   
   defaultAvatars.forEach((avatar, index) => {
-    const div = document.createElement('div');
-    div.className = 'avatar-option';
-    div.style.backgroundImage = `url(${avatar})`;
-    div.style.backgroundSize = 'cover';
-    div.onclick = () => selectAvatar(avatar, index);
-    container.appendChild(div);
+    const img = document.createElement('img');
+    img.className = 'avatar-option';
+    img.src = avatar;
+    img.alt = `Avatar ${index + 1}`;
+    img.onclick = () => selectDefaultAvatar(avatar, index);
+    container.appendChild(img);
   });
+}
+
+// Setup drag and drop for avatar upload
+function setupDragAndDrop() {
+  const uploadArea = document.getElementById('avatarUploadArea');
+  
+  // Prevent default drag behaviors
+  ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+    uploadArea.addEventListener(eventName, preventDefaults, false);
+    document.body.addEventListener(eventName, preventDefaults, false);
+  });
+  
+  // Highlight drop area when item is dragged over it
+  ['dragenter', 'dragover'].forEach(eventName => {
+    uploadArea.addEventListener(eventName, highlight, false);
+  });
+  
+  ['dragleave', 'drop'].forEach(eventName => {
+    uploadArea.addEventListener(eventName, unhighlight, false);
+  });
+  
+  // Handle dropped files
+  uploadArea.addEventListener('drop', handleDrop, false);
+  
+  // File input for the upload area
+  uploadArea.addEventListener('click', () => {
+    document.getElementById('avatarUpload').click();
+  });
+}
+
+function preventDefaults(e) {
+  e.preventDefault();
+  e.stopPropagation();
+}
+
+function highlight() {
+  document.getElementById('avatarUploadArea').classList.add('dragover');
+}
+
+function unhighlight() {
+  document.getElementById('avatarUploadArea').classList.remove('dragover');
+}
+
+function handleDrop(e) {
+  const dt = e.dataTransfer;
+  const files = dt.files;
+  
+  if (files.length > 0) {
+    handleAvatarUpload({ target: { files: files } });
+  }
+}
+
+// Handle avatar upload from file input
+function handleAvatarUpload(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  
+  // Validate file type
+  if (!file.type.startsWith('image/')) {
+    alert('Please upload an image file (PNG, JPG, GIF)');
+    return;
+  }
+  
+  // Validate file size (5MB limit)
+  if (file.size > 5 * 1024 * 1024) {
+    alert('File size too large. Maximum size is 5MB.');
+    return;
+  }
+  
+  uploadedAvatarFile = file;
+  
+  // Show preview
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const preview = document.getElementById('avatarPreview');
+    preview.src = e.target.result;
+    
+    // Clear default avatar selection
+    document.querySelectorAll('.avatar-option').forEach(option => {
+      option.classList.remove('selected');
+    });
+    
+    // Clear custom URL
+    document.getElementById('customAvatarUrl').value = '';
+  };
+  reader.readAsDataURL(file);
+}
+
+// Upload avatar to Firebase Storage
+async function uploadAvatarToStorage(userId) {
+  if (!uploadedAvatarFile) return null;
+  
+  const uploadProgress = document.getElementById('uploadProgress');
+  const progressBar = document.getElementById('uploadProgressBar');
+  const saveBtn = document.getElementById('saveProfileBtn');
+  
+  // Show progress bar
+  uploadProgress.style.display = 'block';
+  progressBar.style.width = '0%';
+  saveBtn.disabled = true;
+  saveBtn.textContent = 'Uploading...';
+  
+  try {
+    // Create a unique filename
+    const timestamp = Date.now();
+    const fileExt = uploadedAvatarFile.name.split('.').pop();
+    const filename = `avatars/${userId}_${timestamp}.${fileExt}`;
+    
+    // Upload to Firebase Storage
+    const storageRef = storage.ref(filename);
+    const uploadTask = storageRef.put(uploadedAvatarFile);
+    
+    // Monitor upload progress
+    return new Promise((resolve, reject) => {
+      uploadTask.on('state_changed',
+        (snapshot) => {
+          // Update progress bar
+          const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          progressBar.style.width = `${progress}%`;
+        },
+        (error) => {
+          // Hide progress bar on error
+          uploadProgress.style.display = 'none';
+          saveBtn.disabled = false;
+          saveBtn.textContent = 'Save Profile';
+          reject(error);
+        },
+        async () => {
+          // Upload complete, get download URL
+          const downloadURL = await uploadTask.snapshot.ref.getDownloadURL();
+          
+          // Hide progress bar
+          uploadProgress.style.display = 'none';
+          saveBtn.disabled = false;
+          saveBtn.textContent = 'Save Profile';
+          
+          resolve(downloadURL);
+        }
+      );
+    });
+  } catch (error) {
+    console.error('Upload error:', error);
+    alert('Failed to upload avatar. Please try again.');
+    return null;
+  }
+}
+
+// Select default avatar
+function selectDefaultAvatar(avatarUrl, index) {
+  uploadedAvatarFile = null; // Clear uploaded file
+  selectedAvatar = avatarUrl;
+  document.getElementById('avatarPreview').src = avatarUrl;
+  
+  // Update selection
+  document.querySelectorAll('.avatar-option').forEach((option, i) => {
+    option.classList.remove('selected');
+    if (i === index) {
+      option.classList.add('selected');
+    }
+  });
+  
+  // Clear custom URL
+  document.getElementById('customAvatarUrl').value = '';
 }
 
 // MEDIA MODAL FUNCTIONS
@@ -1074,6 +1410,11 @@ function openProfileModal() {
   
   if (!user) return;
   
+  // Reset upload state
+  uploadedAvatarFile = null;
+  const uploadProgress = document.getElementById('uploadProgress');
+  uploadProgress.style.display = 'none';
+  
   // Load current profile data
   loadUserProfile(user.uid).then(profile => {
     document.getElementById('profileUsername').value = profile.username || user.email.split('@')[0];
@@ -1094,13 +1435,18 @@ function openProfileModal() {
       }
     });
     
-    // Update avatar selection
+    // Update avatar selection if it's a default avatar
     document.querySelectorAll('.avatar-option').forEach((option, index) => {
       option.classList.remove('selected');
-      if (option.style.backgroundImage.includes(selectedAvatar)) {
+      if (option.src === selectedAvatar) {
         option.classList.add('selected');
       }
     });
+    
+    // Enable save button
+    const saveBtn = document.getElementById('saveProfileBtn');
+    saveBtn.disabled = false;
+    saveBtn.textContent = 'Save Profile';
   });
   
   modal.classList.add('active');
@@ -1111,22 +1457,6 @@ function closeProfileModal() {
   const modal = document.getElementById('profileModal');
   modal.classList.remove('active');
   document.body.style.overflow = '';
-}
-
-function selectAvatar(avatarUrl, index) {
-  selectedAvatar = avatarUrl;
-  document.getElementById('avatarPreview').src = avatarUrl;
-  
-  // Update selection
-  document.querySelectorAll('.avatar-option').forEach((option, i) => {
-    option.classList.remove('selected');
-    if (i === index) {
-      option.classList.add('selected');
-    }
-  });
-  
-  // Clear custom URL
-  document.getElementById('customAvatarUrl').value = '';
 }
 
 function selectColor(color) {
@@ -1158,16 +1488,34 @@ async function saveProfile() {
   
   const username = document.getElementById('profileUsername').value.trim();
   const bio = document.getElementById('profileBio').value.trim();
-  const customAvatar = document.getElementById('customAvatarUrl').value.trim();
+  const customAvatarUrl = document.getElementById('customAvatarUrl').value.trim();
   
-  // Use custom avatar if provided, otherwise use selected
-  const avatar = customAvatar || selectedAvatar;
+  let avatarUrl = '';
+  
+  // Determine which avatar to use (priority: uploaded file > custom URL > selected default > current)
+  if (uploadedAvatarFile) {
+    // Upload new avatar to Firebase Storage
+    avatarUrl = await uploadAvatarToStorage(user.uid);
+    if (!avatarUrl) {
+      alert('Failed to upload avatar. Please try again.');
+      return;
+    }
+  } else if (customAvatarUrl) {
+    // Use custom URL
+    avatarUrl = customAvatarUrl;
+  } else if (selectedAvatar) {
+    // Use selected default avatar
+    avatarUrl = selectedAvatar;
+  } else {
+    // Keep current avatar
+    avatarUrl = userProfile.avatar;
+  }
   
   // Update user profile in Firestore
   await db.collection('profiles').doc(user.uid).set({
     username: username || user.email.split('@')[0],
     bio: bio,
-    avatar: avatar,
+    avatar: avatarUrl,
     themeColor: selectedColor,
     updatedAt: firebase.firestore.FieldValue.serverTimestamp()
   }, { merge: true });
@@ -1175,7 +1523,7 @@ async function saveProfile() {
   // Update local profile
   userProfile.username = username;
   userProfile.bio = bio;
-  userProfile.avatar = avatar;
+  userProfile.avatar = avatarUrl;
   userProfile.themeColor = selectedColor;
   
   // Update UI
@@ -1183,6 +1531,9 @@ async function saveProfile() {
   
   closeProfileModal();
   alert('Profile saved successfully!');
+  
+  // Reset upload state
+  uploadedAvatarFile = null;
 }
 
 // Load user profile from Firestore
@@ -1341,6 +1692,7 @@ function publish(){
     }).then(() => {
       document.getElementById('title').value=""; 
       document.getElementById('file').value="";
+      document.querySelector('.file-input-label').textContent = '📁 Choose file or drag and drop';
       alert('Post published successfully!');
       show('home');
     }).catch(e => {
@@ -1352,6 +1704,16 @@ function publish(){
   };
   r.readAsDataURL(f);
 }
+
+// Update file input label
+document.getElementById('file').addEventListener('change', function(e) {
+  const label = document.querySelector('.file-input-label');
+  if (this.files.length > 0) {
+    label.textContent = `📁 Selected: ${this.files[0].name}`;
+  } else {
+    label.textContent = '📁 Choose file or drag and drop';
+  }
+});
 
 // LOAD POSTS
 async function loadPosts(){
