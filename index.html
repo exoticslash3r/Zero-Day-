@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Public Feed</title>
+
+<!-- FIREBASE -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+
+<style>
+:root {
+  --bg: #ffffff;
+  --text: #000000;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  background-size: cover;
+  background-position: center;
+}
+
+/* NAVBAR */
+.navbar {
+  background: url("https://i.postimg.cc/kXRxQ0nC/zeroday.jpg") center/cover;
+  height: 160px;
+  padding: 12px;
+  display: flex;
+  align-items: flex-end;
+}
+
+.menu {
+  display: flex;
+  gap: 10px;
+}
+
+.menu button {
+  padding: 7px 14px;
+  background: rgba(0,0,0,.65);
+  color: white;
+  border: 1px solid #444;
+  cursor: pointer;
+}
+
+/* PAGES */
+.page {
+  display: none;
+  padding: 20px;
+}
+#home { display: block; }
+
+/* POST */
+.post {
+  border: 1px solid #ccc;
+  padding: 12px;
+  margin-bottom: 20px;
+}
+.post img, .post video {
+  max-width: 100%;
+  margin-top: 10px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="navbar">
+  <div class="menu">
+    <button onclick="show('home')">Home</button>
+    <button onclick="show('post')">Post</button>
+    <button onclick="show('settings')">Settings</button>
+  </div>
+</div>
+
+<div id="home" class="page">
+  <h2>Public Feed</h2>
+  <div id="posts"></div>
+</div>
+
+<div id="post" class="page">
+  <h2>Create Post</h2>
+
+  <input id="title" placeholder="Post title"><br><br>
+  <input type="file" id="file" accept="image/*,video/*"><br><br>
+
+  <button onclick="publish()">Publish</button>
+  <button onclick="show('home')">Cancel</button>
+</div>
+
+<div id="settings" class="page">
+  <h2>Settings (Local)</h2>
+
+  <label><input type="checkbox" id="dark" onchange="toggleDark()"> Dark mode</label><br><br>
+
+  Background color:<br>
+  <input type="color" id="bg"><br><br>
+
+  Text color:<br>
+  <input type="color" id="text"><br><br>
+
+  Upload local background image:<br>
+  <input type="file" accept="image/*" onchange="localBG(event)"><br><br>
+
+  <button onclick="saveColors()">Save</button>
+  <button onclick="reset()">Reset</button>
+  <button onclick="show('home')">Back</button>
+</div>
+
+<script>
+/* FIREBASE INIT */
+firebase.initializeApp({
+  apiKey: "AIzaSyDZYK8wRGXJNlGYNosolSo2zeEjLrqd4Eg",
+  authDomain: "pastebin-604ee.firebaseapp.com",
+  projectId: "pastebin-604ee",
+  storageBucket: "pastebin-604ee.firebasestorage.app",
+  messagingSenderId: "350469070664",
+  appId: "1:350469070664:web:c4a36875e2135cc5b31d7d"
+});
+
+const db = firebase.firestore();
+
+/* NAV */
+function show(id) {
+  document.querySelectorAll('.page').forEach(p => p.style.display='none');
+  document.getElementById(id).style.display='block';
+}
+
+/* POSTING */
+function publish() {
+  const t = title.value.trim();
+  const f = file.files[0];
+  if (!t || !f) return alert("Missing title or media");
+
+  if (!f.type.startsWith("image/") && !f.type.startsWith("video/"))
+    return alert("Media only");
+
+  const r = new FileReader();
+  r.onload = () => {
+    db.collection("posts").add({
+      title: t,
+      media: r.result,
+      type: f.type,
+      time: firebase.firestore.FieldValue.serverTimestamp()
+    });
+    title.value="";
+    file.value="";
+    show('home');
+  };
+  r.readAsDataURL(f);
+}
+
+/* FEED */
+db.collection("posts").orderBy("time","desc")
+.onSnapshot(snap=>{
+  posts.innerHTML="";
+  snap.forEach(doc=>{
+    const p=doc.data();
+    const d=document.createElement("div");
+    d.className="post";
+    d.innerHTML=`<strong>${p.title}</strong>`;
+    if(p.type.startsWith("image"))
+      d.innerHTML+=`<img src="${p.media}">`;
+    else
+      d.innerHTML+=`<video src="${p.media}" controls></video>`;
+    posts.appendChild(d);
+  });
+});
+
+/* SETTINGS */
+function toggleDark(){
+  if(dark.checked){
+    localStorage.dark=1;
+    document.documentElement.style.setProperty('--bg','#111');
+    document.documentElement.style.setProperty('--text','#fff');
+  } else {
+    localStorage.removeItem('dark');
+    load();
+  }
+}
+
+function saveColors(){
+  localStorage.bg=bg.value;
+  localStorage.text=text.value;
+  load();
+}
+
+function localBG(e){
+  const r=new FileReader();
+  r.onload=()=>localStorage.bgimg=r.result;
+  r.readAsDataURL(e.target.files[0]);
+}
+
+function load(){
+  document.documentElement.style.setProperty('--bg',localStorage.bg||'#fff');
+  document.documentElement.style.setProperty('--text',localStorage.text||'#000');
+  if(localStorage.bgimg) document.body.style.backgroundImage=`url(${localStorage.bgimg})`;
+  if(localStorage.dark){ dark.checked=true; toggleDark(); }
+}
+function reset(){ localStorage.clear(); location.reload(); }
+load();
+</script>
+
+</body>
+</html>
