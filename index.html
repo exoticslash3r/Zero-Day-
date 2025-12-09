@@ -20,8 +20,8 @@
 
 body {
   font-family: Arial, sans-serif;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: #333;
+  background: linear-gradient(135deg, #8b0000 0%, #4a0000 100%);
+  color: #fff;
   min-height: 100vh;
   overflow-x: hidden;
 }
@@ -62,9 +62,9 @@ body {
   position: absolute;
   top: 20px;
   right: 20px;
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 0, 0, 0.7);
   color: white;
-  border: none;
+  border: 2px solid #8b0000;
   width: 40px;
   height: 40px;
   border-radius: 50%;
@@ -77,7 +77,7 @@ body {
 }
 
 .media-modal-close:hover {
-  background: rgba(255, 255, 255, 0.3);
+  background: rgba(255, 0, 0, 0.9);
   transform: scale(1.1);
 }
 
@@ -85,9 +85,9 @@ body {
   position: absolute;
   top: 20px;
   left: 20px;
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 0, 0, 0.7);
   color: white;
-  border: none;
+  border: 2px solid #8b0000;
   padding: 10px 20px;
   border-radius: 25px;
   font-size: 14px;
@@ -96,18 +96,21 @@ body {
 }
 
 .media-modal-download:hover {
-  background: rgba(255, 255, 255, 0.3);
+  background: rgba(255, 0, 0, 0.9);
   transform: scale(1.05);
 }
 
 .media-preview {
   cursor: pointer;
   transition: transform 0.3s ease, opacity 0.3s ease;
+  border: 2px solid #8b0000;
+  border-radius: 8px;
 }
 
 .media-preview:hover {
   transform: scale(1.02);
   opacity: 0.9;
+  border-color: #ff0000;
 }
 
 /* Scrollbar Styling (Desktop) */
@@ -116,17 +119,18 @@ body {
 }
 
 ::-webkit-scrollbar-track {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(139, 0, 0, 0.2);
   border-radius: 10px;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: linear-gradient(45deg, #ff0080, #ff8c00);
+  background: linear-gradient(45deg, #8b0000, #ff0000);
   border-radius: 10px;
+  border: 2px solid #4a0000;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(45deg, #ff8c00, #ff0080);
+  background: linear-gradient(45deg, #ff0000, #8b0000);
 }
 
 /* Container */
@@ -141,127 +145,202 @@ body {
 
 /* THEME STYLES */
 body.normal-theme {
-  background: #f5f5f5;
-  color: #333;
+  background: linear-gradient(135deg, #8b0000 0%, #4a0000 100%);
+  color: #fff;
 }
 
-body.early2000s-theme {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: #000;
-  font-family: "Comic Sans MS", "Trebuchet MS", Arial, sans-serif;
+body.bloody-red-theme {
+  background: linear-gradient(135deg, #8b0000 0%, #4a0000 100%);
+  color: #fff;
+  font-family: "Courier New", "Arial Black", Arial, sans-serif;
 }
 
-.early2000s-theme .navbar {
-  background: linear-gradient(45deg, #ff0080, #ff8c00);
-  border: 3px solid #000;
+.bloody-red-theme .navbar {
+  background: linear-gradient(45deg, #8b0000, #4a0000);
+  border: 3px solid #ff0000;
   border-radius: 0 0 15px 15px;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+  box-shadow: 0 4px 20px rgba(255, 0, 0, 0.3);
+  position: relative;
+  overflow: hidden;
 }
 
-.early2000s-theme .navbar button {
-  background: linear-gradient(45deg, #00ff00, #00ccff);
-  color: #000;
-  border: 2px solid #000;
+.bloody-red-theme .navbar::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, #ff0000, transparent);
+  animation: bloodFlow 3s infinite;
+}
+
+@keyframes bloodFlow {
+  0% { left: -100%; }
+  100% { left: 100%; }
+}
+
+.bloody-red-theme .navbar button {
+  background: linear-gradient(45deg, #8b0000, #ff0000);
+  color: #fff;
+  border: 2px solid #ff4444;
   font-weight: bold;
-  text-shadow: 1px 1px 0 #fff;
+  text-shadow: 1px 1px 0 #000;
+  position: relative;
+  overflow: hidden;
 }
 
-.early2000s-theme .navbar button:hover {
-  background: linear-gradient(45deg, #00ccff, #00ff00);
+.bloody-red-theme .navbar button:hover {
+  background: linear-gradient(45deg, #ff0000, #8b0000);
   transform: scale(1.05);
+  box-shadow: 0 0 15px rgba(255, 0, 0, 0.7);
 }
 
-.early2000s-theme .page {
-  background: #fff;
-  border: 3px dashed #ff0080;
+.bloody-red-theme .page {
+  background: rgba(74, 0, 0, 0.9);
+  border: 3px solid #ff0000;
   border-radius: 15px;
-  box-shadow: 8px 8px 0 #000;
+  box-shadow: 0 0 25px rgba(255, 0, 0, 0.5);
+  position: relative;
+  overflow: hidden;
 }
 
-.early2000s-theme .post {
-  background: linear-gradient(135deg, #ffffcc, #ccffff);
-  border: 2px solid #000;
+.bloody-red-theme .page::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" opacity="0.1"><path d="M0,50 Q25,25 50,50 T100,50" stroke="%23ff0000" fill="none"/></svg>');
+  pointer-events: none;
+}
+
+.bloody-red-theme .post {
+  background: linear-gradient(135deg, rgba(139, 0, 0, 0.8), rgba(74, 0, 0, 0.9));
+  border: 2px solid #ff4444;
   border-radius: 10px;
-  box-shadow: 4px 4px 0 #666;
+  box-shadow: 0 0 15px rgba(255, 0, 0, 0.3);
+  position: relative;
+  overflow: hidden;
 }
 
-.early2000s-theme .tag.andre-tag {
-  background: linear-gradient(45deg, #ff00ff, #ffff00);
-  color: #000;
+.bloody-red-theme .post::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, #ff0000, transparent);
+}
+
+.bloody-red-theme .tag.andre-tag {
+  background: linear-gradient(45deg, #ff0000, #8b0000);
+  color: #fff;
   font-weight: bold;
-  animation: blink 2s infinite;
-  border: 2px solid #000;
+  animation: bloodPulse 2s infinite;
+  border: 2px solid #ff4444;
+  text-shadow: 1px 1px 2px #000;
 }
 
-.early2000s-theme .tag.regular-tag {
-  background: linear-gradient(45deg, #00ccff, #00ff99);
-  color: #000;
+.bloody-red-theme .tag.regular-tag {
+  background: linear-gradient(45deg, #8b0000, #4a0000);
+  color: #fff;
   font-weight: bold;
-  border: 2px solid #000;
+  border: 2px solid #ff4444;
 }
 
-@keyframes blink {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.7; }
+@keyframes bloodPulse {
+  0%, 100% { 
+    box-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
+    transform: scale(1);
+  }
+  50% { 
+    box-shadow: 0 0 20px rgba(255, 0, 0, 0.8);
+    transform: scale(1.05);
+  }
 }
 
-.early2000s-theme input, .early2000s-theme button:not(.navbar button) {
-  border: 2px solid #000;
+.bloody-red-theme input, 
+.bloody-red-theme textarea,
+.bloody-red-theme select,
+.bloody-red-theme button:not(.navbar button) {
+  border: 2px solid #ff0000;
   border-radius: 5px;
-  background: #ffffcc;
+  background: rgba(74, 0, 0, 0.8);
+  color: #fff;
 }
 
-.early2000s-theme h2 {
-  background: linear-gradient(45deg, #ff0080, #00ccff);
+.bloody-red-theme input::placeholder,
+.bloody-red-theme textarea::placeholder {
+  color: #ff9999;
+}
+
+.bloody-red-theme h2 {
+  background: linear-gradient(45deg, #ff0000, #8b0000);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
-  text-shadow: 2px 2px 0 #000;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+  position: relative;
+  display: inline-block;
+}
+
+.bloody-red-theme h2::after {
+  content: '';
+  position: absolute;
+  bottom: -5px;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #ff0000, transparent);
 }
 
 /* Normal Theme */
 .normal-theme .navbar {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  border-bottom: 2px solid #ddd;
+  background: linear-gradient(135deg, #8b0000 0%, #4a0000 100%);
+  border-bottom: 2px solid #ff0000;
 }
 
 .normal-theme .navbar button {
-  background: #4a5568;
+  background: #8b0000;
   color: white;
   transition: all 0.3s ease;
 }
 
 .normal-theme .navbar button:hover {
-  background: #2d3748;
+  background: #ff0000;
   transform: translateY(-2px);
 }
 
 .normal-theme .page {
-  background: white;
+  background: rgba(74, 0, 0, 0.95);
   border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 6px rgba(255, 0, 0, 0.2);
+  color: #fff;
 }
 
 .normal-theme .post {
-  background: #f8f9fa;
-  border: 1px solid #e2e8f0;
+  background: rgba(139, 0, 0, 0.8);
+  border: 1px solid #ff4444;
   border-radius: 6px;
   transition: transform 0.2s;
 }
 
 .normal-theme .post:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  box-shadow: 0 4px 12px rgba(255, 0, 0, 0.3);
 }
 
 .normal-theme .tag.andre-tag {
-  background: linear-gradient(45deg, #ff0080, #ff8c00);
+  background: linear-gradient(45deg, #ff0000, #8b0000);
   color: white;
   font-weight: bold;
 }
 
 .normal-theme .tag.regular-tag {
-  background: #4299e1;
+  background: #8b0000;
   color: white;
 }
 
@@ -301,15 +380,194 @@ body.early2000s-theme {
 }
 
 #themeToggle {
-  background: linear-gradient(45deg, #ff0080, #ff8c00);
+  background: linear-gradient(45deg, #8b0000, #ff0000);
   color: white;
+  border: 2px solid #ff4444;
 }
 
 #userEmail {
   font-weight: bold;
-  padding: 5px 10px;
-  background: rgba(255,255,255,0.2);
-  border-radius: 4px;
+  padding: 8px 15px;
+  background: rgba(255, 0, 0, 0.3);
+  border-radius: 20px;
+  border: 1px solid #ff4444;
+}
+
+/* Profile Section */
+.profile-section {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 20px;
+  padding: 15px;
+  background: rgba(139, 0, 0, 0.3);
+  border-radius: 10px;
+  border: 2px solid #ff4444;
+}
+
+.profile-avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  border: 3px solid #ff0000;
+  object-fit: cover;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.profile-avatar:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 20px rgba(255, 0, 0, 0.7);
+}
+
+.profile-info {
+  flex: 1;
+}
+
+.profile-username {
+  font-size: 24px;
+  font-weight: bold;
+  color: #fff;
+  margin-bottom: 5px;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.profile-bio {
+  color: #ff9999;
+  font-size: 14px;
+  margin-bottom: 10px;
+}
+
+.profile-stats {
+  display: flex;
+  gap: 20px;
+  font-size: 12px;
+  color: #ffcccc;
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.stat-value {
+  font-weight: bold;
+  font-size: 16px;
+  color: #fff;
+}
+
+/* Profile Customization Modal */
+.profile-modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.9);
+  z-index: 3000;
+  justify-content: center;
+  align-items: center;
+}
+
+.profile-modal.active {
+  display: flex;
+}
+
+.profile-modal-content {
+  background: linear-gradient(135deg, #8b0000 0%, #4a0000 100%);
+  border: 3px solid #ff0000;
+  border-radius: 15px;
+  padding: 30px;
+  width: 90%;
+  max-width: 500px;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+}
+
+.profile-modal-close {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: rgba(255, 0, 0, 0.7);
+  color: white;
+  border: 2px solid #8b0000;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  font-size: 18px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.profile-modal-close:hover {
+  background: rgba(255, 0, 0, 0.9);
+}
+
+.profile-avatar-preview {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  border: 3px solid #ff0000;
+  object-fit: cover;
+  margin: 0 auto 20px;
+  display: block;
+}
+
+/* Avatar Selection */
+.avatar-options {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  margin: 15px 0;
+}
+
+.avatar-option {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.avatar-option:hover {
+  transform: scale(1.1);
+  border-color: #ff0000;
+}
+
+.avatar-option.selected {
+  border-color: #ff0000;
+  box-shadow: 0 0 15px rgba(255, 0, 0, 0.7);
+}
+
+/* Color Picker */
+.color-picker {
+  display: flex;
+  gap: 10px;
+  margin: 15px 0;
+}
+
+.color-option {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.color-option:hover {
+  transform: scale(1.2);
+}
+
+.color-option.selected {
+  border-color: white;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.7);
 }
 
 /* Pages */
@@ -326,15 +584,19 @@ body.early2000s-theme {
 }
 
 /* Form Elements */
-input, button:not(.navbar button) {
+input, textarea, select, button:not(.navbar button) {
   width: 100%;
   padding: 12px;
   margin: 8px 0;
   font-size: 16px;
+  background: rgba(74, 0, 0, 0.8);
+  border: 2px solid #ff0000;
+  border-radius: 5px;
+  color: white;
 }
 
 button:not(.navbar button) {
-  background: #4a5568;
+  background: linear-gradient(45deg, #8b0000, #ff0000);
   color: white;
   border: none;
   border-radius: 4px;
@@ -344,17 +606,19 @@ button:not(.navbar button) {
 }
 
 button:not(.navbar button):hover {
-  background: #2d3748;
+  background: linear-gradient(45deg, #ff0000, #8b0000);
+  transform: translateY(-2px);
 }
 
 a {
-  color: #4299e1;
+  color: #ff6666;
   text-decoration: none;
   font-weight: 600;
 }
 
 a:hover {
   text-decoration: underline;
+  color: #ff0000;
 }
 
 /* Posts */
@@ -374,10 +638,45 @@ a:hover {
   flex-direction: column;
 }
 
+.post-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 15px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(255, 0, 0, 0.3);
+}
+
+.post-user-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.post-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 2px solid #ff0000;
+  object-fit: cover;
+}
+
+.post-username {
+  font-weight: bold;
+  color: #fff;
+  font-size: 16px;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.post-time {
+  font-size: 12px;
+  color: #ff9999;
+}
+
 .post img, .post video {
   max-width: 100%;
   height: auto;
-  border-radius: 4px;
+  border-radius: 8px;
   margin-top: 10px;
 }
 
@@ -385,58 +684,24 @@ a:hover {
   font-size: 18px;
   margin-bottom: 5px;
   display: block;
+  color: #fff;
 }
 
 .tag {
-  padding: 3px 8px;
+  padding: 5px 12px;
   font-size: 12px;
-  border-radius: 12px;
+  border-radius: 15px;
   display: inline-block;
   margin-left: 10px;
-}
-
-.author-info {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 10px;
-}
-
-.author-left {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.author-avatar {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  background: linear-gradient(45deg, #667eea, #764ba2);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  font-weight: bold;
-  font-size: 14px;
-}
-
-.author-name {
-  font-weight: bold;
-  color: #4a5568;
-}
-
-.early2000s-theme .author-name {
-  color: #000;
 }
 
 .post button.delete {
   position: absolute;
   top: 10px;
   right: 10px;
-  background: #e53e3e;
+  background: rgba(255, 0, 0, 0.7);
   color: white;
-  border: none;
+  border: 2px solid #8b0000;
   padding: 5px 10px;
   cursor: pointer;
   border-radius: 4px;
@@ -445,7 +710,7 @@ a:hover {
 }
 
 .post button.delete:hover {
-  background: #c53030;
+  background: rgba(255, 0, 0, 0.9);
 }
 
 /* Responsive Design */
@@ -494,6 +759,19 @@ a:hover {
     padding: 8px 16px;
     font-size: 12px;
   }
+  
+  .profile-section {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .profile-stats {
+    justify-content: center;
+  }
+  
+  .avatar-options {
+    grid-template-columns: repeat(3, 1fr);
+  }
 }
 
 @media (max-width: 480px) {
@@ -517,10 +795,8 @@ a:hover {
     padding: 10px;
   }
   
-  .author-info {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 5px;
+  .avatar-options {
+    grid-template-columns: repeat(2, 1fr);
   }
 }
 
@@ -531,9 +807,9 @@ a:hover {
 }
 
 .loading {
-  border: 4px solid rgba(255,255,255,0.3);
+  border: 4px solid rgba(255, 0, 0, 0.3);
   border-radius: 50%;
-  border-top: 4px solid #4299e1;
+  border-top: 4px solid #ff0000;
   width: 40px;
   height: 40px;
   animation: loading 1s linear infinite;
@@ -541,7 +817,7 @@ a:hover {
 }
 </style>
 </head>
-<body class="early2000s-theme">
+<body class="bloody-red-theme">
 
 <!-- Fullscreen Media Modal -->
 <div id="mediaModal" class="media-modal">
@@ -549,6 +825,43 @@ a:hover {
     <button class="media-modal-close" onclick="closeMediaModal()">✕</button>
     <button class="media-modal-download" onclick="downloadMedia()">Download</button>
     <div id="modalMediaContainer"></div>
+  </div>
+</div>
+
+<!-- Profile Customization Modal -->
+<div id="profileModal" class="profile-modal">
+  <div class="profile-modal-content">
+    <button class="profile-modal-close" onclick="closeProfileModal()">✕</button>
+    <h2>Customize Profile</h2>
+    
+    <div class="profile-form">
+      <img id="avatarPreview" class="profile-avatar-preview" src="" alt="Avatar Preview">
+      
+      <label>Username:</label>
+      <input type="text" id="profileUsername" placeholder="Enter username">
+      
+      <label>Bio:</label>
+      <textarea id="profileBio" placeholder="Tell us about yourself..." rows="3"></textarea>
+      
+      <label>Theme Color:</label>
+      <div class="color-picker">
+        <div class="color-option" style="background: #8b0000;" onclick="selectColor('#8b0000')"></div>
+        <div class="color-option" style="background: #ff0000;" onclick="selectColor('#ff0000')"></div>
+        <div class="color-option" style="background: #4a0000;" onclick="selectColor('#4a0000')"></div>
+        <div class="color-option" style="background: #660000;" onclick="selectColor('#660000')"></div>
+        <div class="color-option" style="background: #cc0000;" onclick="selectColor('#cc0000')"></div>
+      </div>
+      
+      <label>Choose Avatar:</label>
+      <div class="avatar-options" id="avatarOptions">
+        <!-- Avatars will be populated by JavaScript -->
+      </div>
+      
+      <label>Custom Avatar URL:</label>
+      <input type="text" id="customAvatarUrl" placeholder="Or paste image URL">
+      
+      <button onclick="saveProfile()" style="margin-top: 20px;">Save Profile</button>
+    </div>
   </div>
 </div>
 
@@ -562,7 +875,14 @@ a:hover {
       <button id="themeToggle" onclick="toggleTheme()">Switch to Normal Theme</button>
       <button onclick="show('home')">Home</button>
       <button onclick="show('post')">Post</button>
+      <button onclick="show('profile')" id="profileBtn" style="display: none;">My Profile</button>
     </div>
+  </div>
+
+  <!-- PROFILE PAGE -->
+  <div id="profile" class="page">
+    <div id="profileDisplay"></div>
+    <button onclick="openProfileModal()" style="width: auto; align-self: flex-start;">Edit Profile</button>
   </div>
 
   <!-- LOGIN PAGE -->
@@ -579,6 +899,7 @@ a:hover {
     <h2>Sign Up</h2>
     <input type="email" id="signupEmail" placeholder="Email">
     <input type="password" id="signupPass" placeholder="Password">
+    <input type="text" id="signupUsername" placeholder="Username (optional)">
     <button onclick="signup()">Sign Up</button>
     <p>Already have account? <a href="#" onclick="show('login')">Login</a></p>
   </div>
@@ -615,25 +936,45 @@ const db = firebase.firestore();
 let currentMediaUrl = '';
 let currentMediaType = '';
 
+// User profile data
+let userProfile = {
+  username: '',
+  bio: '',
+  avatar: '',
+  themeColor: '#8b0000',
+  postCount: 0,
+  joinDate: ''
+};
+
+// Default avatars
+const defaultAvatars = [
+  'https://api.dicebear.com/7.x/avataaars/svg?seed=blood1&backgroundColor=b6e3f4',
+  'https://api.dicebear.com/7.x/avataaars/svg?seed=blood2&backgroundColor=b6e3f4',
+  'https://api.dicebear.com/7.x/avataaars/svg?seed=blood3&backgroundColor=b6e3f4',
+  'https://api.dicebear.com/7.x/avataaars/svg?seed=blood4&backgroundColor=b6e3f4',
+  'https://api.dicebear.com/7.x/avataaars/svg?seed=blood5&backgroundColor=b6e3f4',
+  'https://api.dicebear.com/7.x/avataaars/svg?seed=blood6&backgroundColor=b6e3f4'
+];
+
 // THEME MANAGEMENT
-let isEarly2000sTheme = true;
+let isBloodyRedTheme = true;
 
 function toggleTheme() {
   const body = document.body;
   const toggleBtn = document.getElementById('themeToggle');
   
-  if (isEarly2000sTheme) {
-    body.classList.remove('early2000s-theme');
+  if (isBloodyRedTheme) {
+    body.classList.remove('bloody-red-theme');
     body.classList.add('normal-theme');
-    toggleBtn.textContent = 'Switch to 2000s Theme';
+    toggleBtn.textContent = 'Switch to Bloody Red Theme';
   } else {
     body.classList.remove('normal-theme');
-    body.classList.add('early2000s-theme');
+    body.classList.add('bloody-red-theme');
     toggleBtn.textContent = 'Switch to Normal Theme';
   }
   
-  isEarly2000sTheme = !isEarly2000sTheme;
-  localStorage.setItem('theme', isEarly2000sTheme ? 'early2000s' : 'normal');
+  isBloodyRedTheme = !isBloodyRedTheme;
+  localStorage.setItem('theme', isBloodyRedTheme ? 'bloody-red' : 'normal');
 }
 
 // Load saved theme
@@ -642,7 +983,23 @@ window.addEventListener('DOMContentLoaded', () => {
   if (savedTheme === 'normal') {
     toggleTheme(); // Switch to normal theme
   }
+  loadAvatarOptions();
 });
+
+// Load avatar options
+function loadAvatarOptions() {
+  const container = document.getElementById('avatarOptions');
+  container.innerHTML = '';
+  
+  defaultAvatars.forEach((avatar, index) => {
+    const div = document.createElement('div');
+    div.className = 'avatar-option';
+    div.style.backgroundImage = `url(${avatar})`;
+    div.style.backgroundSize = 'cover';
+    div.onclick = () => selectAvatar(avatar, index);
+    container.appendChild(div);
+  });
+}
 
 // MEDIA MODAL FUNCTIONS
 function openMediaModal(mediaUrl, mediaType) {
@@ -674,15 +1031,14 @@ function openMediaModal(mediaUrl, mediaType) {
   }
   
   modal.classList.add('active');
-  document.body.style.overflow = 'hidden'; // Prevent background scrolling
+  document.body.style.overflow = 'hidden';
 }
 
 function closeMediaModal() {
   const modal = document.getElementById('mediaModal');
   modal.classList.remove('active');
-  document.body.style.overflow = ''; // Restore scrolling
+  document.body.style.overflow = '';
   
-  // Stop video playback
   const video = modal.querySelector('video');
   if (video) {
     video.pause();
@@ -693,11 +1049,9 @@ function closeMediaModal() {
 function downloadMedia() {
   if (!currentMediaUrl) return;
   
-  // Create a temporary link element
   const link = document.createElement('a');
   link.href = currentMediaUrl;
   
-  // Set filename based on media type and timestamp
   const timestamp = new Date().getTime();
   if (currentMediaType.startsWith('image')) {
     link.download = `image_${timestamp}.jpg`;
@@ -705,34 +1059,184 @@ function downloadMedia() {
     link.download = `video_${timestamp}.mp4`;
   }
   
-  // Trigger download
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);
 }
 
-// Close modal when clicking outside content
-document.getElementById('mediaModal').addEventListener('click', function(e) {
-  if (e.target === this) {
-    closeMediaModal();
-  }
-});
+// PROFILE MODAL FUNCTIONS
+let selectedAvatar = '';
+let selectedColor = '#8b0000';
 
-// Close modal with Escape key
-document.addEventListener('keydown', function(e) {
-  if (e.key === 'Escape') {
-    closeMediaModal();
-  }
-});
+function openProfileModal() {
+  const modal = document.getElementById('profileModal');
+  const user = auth.currentUser;
+  
+  if (!user) return;
+  
+  // Load current profile data
+  loadUserProfile(user.uid).then(profile => {
+    document.getElementById('profileUsername').value = profile.username || user.email.split('@')[0];
+    document.getElementById('profileBio').value = profile.bio || '';
+    document.getElementById('customAvatarUrl').value = '';
+    document.getElementById('avatarPreview').src = profile.avatar || defaultAvatars[0];
+    
+    // Set selected avatar
+    selectedAvatar = profile.avatar || defaultAvatars[0];
+    selectedColor = profile.themeColor || '#8b0000';
+    
+    // Update color picker
+    document.querySelectorAll('.color-option').forEach(option => {
+      option.classList.remove('selected');
+      if (option.style.backgroundColor === selectedColor || 
+          option.style.backgroundColor === rgbToHex(selectedColor)) {
+        option.classList.add('selected');
+      }
+    });
+    
+    // Update avatar selection
+    document.querySelectorAll('.avatar-option').forEach((option, index) => {
+      option.classList.remove('selected');
+      if (option.style.backgroundImage.includes(selectedAvatar)) {
+        option.classList.add('selected');
+      }
+    });
+  });
+  
+  modal.classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
 
-// Get avatar initials from email
-function getAvatarInitials(email) {
-  if (!email) return '?';
-  const parts = email.split('@')[0];
-  if (parts.length >= 2) {
-    return parts.substring(0, 2).toUpperCase();
+function closeProfileModal() {
+  const modal = document.getElementById('profileModal');
+  modal.classList.remove('active');
+  document.body.style.overflow = '';
+}
+
+function selectAvatar(avatarUrl, index) {
+  selectedAvatar = avatarUrl;
+  document.getElementById('avatarPreview').src = avatarUrl;
+  
+  // Update selection
+  document.querySelectorAll('.avatar-option').forEach((option, i) => {
+    option.classList.remove('selected');
+    if (i === index) {
+      option.classList.add('selected');
+    }
+  });
+  
+  // Clear custom URL
+  document.getElementById('customAvatarUrl').value = '';
+}
+
+function selectColor(color) {
+  selectedColor = color;
+  
+  // Update selection
+  document.querySelectorAll('.color-option').forEach(option => {
+    option.classList.remove('selected');
+    if (option.style.backgroundColor === color || 
+        option.style.backgroundColor === rgbToHex(color)) {
+      option.classList.add('selected');
+    }
+  });
+}
+
+function rgbToHex(rgb) {
+  if (rgb.startsWith('#')) return rgb;
+  
+  const rgbMatch = rgb.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/);
+  if (rgbMatch) {
+    return "#" + ((1 << 24) + (parseInt(rgbMatch[1]) << 16) + (parseInt(rgbMatch[2]) << 8) + parseInt(rgbMatch[3])).toString(16).slice(1);
   }
-  return parts.charAt(0).toUpperCase();
+  return rgb;
+}
+
+async function saveProfile() {
+  const user = auth.currentUser;
+  if (!user) return;
+  
+  const username = document.getElementById('profileUsername').value.trim();
+  const bio = document.getElementById('profileBio').value.trim();
+  const customAvatar = document.getElementById('customAvatarUrl').value.trim();
+  
+  // Use custom avatar if provided, otherwise use selected
+  const avatar = customAvatar || selectedAvatar;
+  
+  // Update user profile in Firestore
+  await db.collection('profiles').doc(user.uid).set({
+    username: username || user.email.split('@')[0],
+    bio: bio,
+    avatar: avatar,
+    themeColor: selectedColor,
+    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+  }, { merge: true });
+  
+  // Update local profile
+  userProfile.username = username;
+  userProfile.bio = bio;
+  userProfile.avatar = avatar;
+  userProfile.themeColor = selectedColor;
+  
+  // Update UI
+  updateProfileDisplay();
+  
+  closeProfileModal();
+  alert('Profile saved successfully!');
+}
+
+// Load user profile from Firestore
+async function loadUserProfile(uid) {
+  const doc = await db.collection('profiles').doc(uid).get();
+  if (doc.exists) {
+    userProfile = { ...userProfile, ...doc.data() };
+  } else {
+    // Create default profile
+    const user = auth.currentUser;
+    userProfile.username = user.email.split('@')[0];
+    userProfile.avatar = defaultAvatars[Math.floor(Math.random() * defaultAvatars.length)];
+    userProfile.themeColor = '#8b0000';
+    userProfile.joinDate = new Date().toLocaleDateString();
+    
+    // Save to Firestore
+    await db.collection('profiles').doc(uid).set(userProfile);
+  }
+  
+  // Load post count
+  const posts = await db.collection('posts')
+    .where('author', '==', user.email)
+    .get();
+  userProfile.postCount = posts.size;
+  
+  return userProfile;
+}
+
+// Update profile display
+function updateProfileDisplay() {
+  const user = auth.currentUser;
+  if (!user) return;
+  
+  const profileDisplay = document.getElementById('profileDisplay');
+  
+  profileDisplay.innerHTML = `
+    <div class="profile-section">
+      <img src="${userProfile.avatar}" alt="Avatar" class="profile-avatar" onclick="openProfileModal()">
+      <div class="profile-info">
+        <div class="profile-username">${userProfile.username}</div>
+        <div class="profile-bio">${userProfile.bio || 'No bio yet.'}</div>
+        <div class="profile-stats">
+          <div class="stat">
+            <span class="stat-value">${userProfile.postCount || 0}</span>
+            <span>Posts</span>
+          </div>
+          <div class="stat">
+            <span class="stat-value">${userProfile.joinDate || new Date().toLocaleDateString()}</span>
+            <span>Joined</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
 }
 
 // SHOW PAGE FUNCTION
@@ -740,35 +1244,57 @@ function show(id){
   document.querySelectorAll('.page').forEach(p=>p.style.display='none');
   document.getElementById(id).style.display='block';
   
-  // Load posts when showing home
   if (id === 'home') {
     loadPosts();
+  } else if (id === 'profile') {
+    updateProfileDisplay();
   }
 }
 
 // AUTH STATE
-auth.onAuthStateChanged(user=>{
+auth.onAuthStateChanged(async user=>{
   if(user){
     document.getElementById('userEmail').textContent = user.email + (user.email === 'exoticslash3r@gmail.com' ? ' (AndreKriegman)' : '');
     document.getElementById('logoutBtn').style.display='inline-block';
+    document.getElementById('profileBtn').style.display='inline-block';
+    
+    // Load user profile
+    await loadUserProfile(user.uid);
+    
     show('home');
     loadPosts();
   } else {
     document.getElementById('userEmail').textContent='Not signed in';
     document.getElementById('logoutBtn').style.display='none';
+    document.getElementById('profileBtn').style.display='none';
     show('login');
   }
 });
 
 // SIGNUP / LOGIN
-function signup(){
-  const email=document.getElementById('signupEmail').value;
-  const pass=document.getElementById('signupPass').value;
-  auth.createUserWithEmailAndPassword(email,pass)
-  .then(() => {
+async function signup(){
+  const email = document.getElementById('signupEmail').value;
+  const pass = document.getElementById('signupPass').value;
+  const username = document.getElementById('signupUsername').value.trim();
+  
+  try {
+    const userCredential = await auth.createUserWithEmailAndPassword(email, pass);
+    const user = userCredential.user;
+    
+    // Create profile for new user
+    await db.collection('profiles').doc(user.uid).set({
+      username: username || email.split('@')[0],
+      bio: '',
+      avatar: defaultAvatars[Math.floor(Math.random() * defaultAvatars.length)],
+      themeColor: '#8b0000',
+      joinDate: new Date().toLocaleDateString(),
+      createdAt: firebase.firestore.FieldValue.serverTimestamp()
+    });
+    
     alert('Account created successfully!');
-  })
-  .catch(e=>alert(e.message));
+  } catch(e) {
+    alert(e.message);
+  }
 }
 
 function login(){
@@ -809,6 +1335,8 @@ function publish(){
       media:r.result,
       type:f.type,
       author:user.email,
+      authorUsername: userProfile.username || user.email.split('@')[0],
+      authorAvatar: userProfile.avatar || defaultAvatars[0],
       time:firebase.firestore.FieldValue.serverTimestamp()
     }).then(() => {
       document.getElementById('title').value=""; 
@@ -826,21 +1354,27 @@ function publish(){
 }
 
 // LOAD POSTS
-function loadPosts(){
+async function loadPosts(){
   const postsContainer = document.getElementById('posts');
   postsContainer.innerHTML = '<div class="loading"></div>';
   
-  db.collection("posts").orderBy("time","desc").onSnapshot(s=>{
+  db.collection("posts").orderBy("time","desc").onSnapshot(async s=>{
     if(s.empty){
-      postsContainer.innerHTML='<p style="text-align:center;padding:40px;color:#666;">No posts yet. Be the first to post!</p>';
+      postsContainer.innerHTML='<p style="text-align:center;padding:40px;color:#ff9999;">No posts yet. Be the first to post!</p>';
       return;
     }
     
     postsContainer.innerHTML="";
-    s.forEach(d=>{
-      const p=d.data();
-      const div=document.createElement("div");
-      div.className='post';
+    
+    // Get all posts and load profiles
+    const posts = [];
+    s.forEach(d => posts.push({ id: d.id, data: d.data() }));
+    
+    // Load profiles for all authors
+    for (const post of posts) {
+      const p = post.data;
+      const div = document.createElement("div");
+      div.className = 'post';
       
       // Format timestamp
       const time = p.time ? new Date(p.time.seconds * 1000).toLocaleString() : 'Just now';
@@ -848,20 +1382,23 @@ function loadPosts(){
       // Check if author is exoticslash3r@gmail.com
       const isAndre = p.author === 'exoticslash3r@gmail.com';
       const tagClass = isAndre ? 'tag andre-tag' : 'tag regular-tag';
-      const tagText = isAndre ? 'AndreKriegman' : p.author.split('@')[0];
+      const tagText = isAndre ? 'AndreKriegman' : (p.authorUsername || p.author.split('@')[0]);
+      
+      // Get avatar (try from post data, then load from profile)
+      let avatar = p.authorAvatar || defaultAvatars[0];
       
       div.innerHTML=`
-        <div class="author-info">
-          <div class="author-left">
-            <div class="author-avatar" style="background: ${isAndre ? 'linear-gradient(45deg, #ff0080, #ff8c00)' : 'linear-gradient(45deg, #667eea, #764ba2)'}">
-              ${getAvatarInitials(p.author)}
+        <div class="post-header">
+          <div class="post-user-info">
+            <img src="${avatar}" alt="Avatar" class="post-avatar">
+            <div>
+              <div class="post-username">${p.authorUsername || p.author.split('@')[0]}</div>
+              <div class="post-time">${time}</div>
             </div>
-            <span class="author-name">${p.author}</span>
           </div>
           <span class="${tagClass}">${tagText}</span>
         </div>
         <strong>${p.title}</strong>
-        <small style="display:block;color:#666;margin:5px 0;">${time}</small>
       `;
       
       if(p.media){
@@ -894,16 +1431,16 @@ function loadPosts(){
         del.onclick = (e) => {
           e.stopPropagation();
           if (confirm('Delete this post?')) {
-            db.collection('posts').doc(d.id).delete();
+            db.collection('posts').doc(post.id).delete();
           }
         };
         div.appendChild(del);
       }
       
       postsContainer.appendChild(div);
-    });
+    }
   }, error => {
-    postsContainer.innerHTML='<p style="text-align:center;padding:40px;color:#e53e3e;">Error loading posts. Please try again.</p>';
+    postsContainer.innerHTML='<p style="text-align:center;padding:40px;color:#ff6666;">Error loading posts. Please try again.</p>';
     console.error('Error loading posts:', error);
   });
 }
@@ -911,6 +1448,27 @@ function loadPosts(){
 // Initialize
 document.addEventListener('DOMContentLoaded', () => {
   show('login');
+});
+
+// Close modals when clicking outside content
+document.getElementById('mediaModal').addEventListener('click', function(e) {
+  if (e.target === this) {
+    closeMediaModal();
+  }
+});
+
+document.getElementById('profileModal').addEventListener('click', function(e) {
+  if (e.target === this) {
+    closeProfileModal();
+  }
+});
+
+// Close modal with Escape key
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') {
+    closeMediaModal();
+    closeProfileModal();
+  }
 });
 </script>
 
