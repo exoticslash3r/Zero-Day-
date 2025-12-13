@@ -524,35 +524,6 @@ body {
   color: #ffdd00;
 }
 
-/* Avatar Selection */
-.avatar-options {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 10px;
-  margin: 15px 0;
-}
-
-.avatar-option {
-  width: 60px;
-  height: 60px;
-  border-radius: 50%;
-  border: 2px solid transparent;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  object-fit: cover;
-}
-
-.avatar-option:hover {
-  transform: scale(1.1);
-  border-color: #ffdd00;
-  box-shadow: 0 0 10px rgba(255, 221, 0, 0.7);
-}
-
-.avatar-option.selected {
-  border-color: #ffdd00;
-  box-shadow: 0 0 15px rgba(255, 221, 0, 0.9);
-}
-
 /* Color Picker */
 .color-picker {
   display: flex;
@@ -744,10 +715,6 @@ a:hover {
   .profile-stats {
     justify-content: center;
   }
-  
-  .avatar-options {
-    grid-template-columns: repeat(3, 1fr);
-  }
 }
 
 @media (max-width: 480px) {
@@ -765,10 +732,6 @@ a:hover {
   input, button:not(.navbar button, .control-btn) {
     padding: 10px;
     font-size: 14px;
-  }
-  
-  .avatar-options {
-    grid-template-columns: repeat(2, 1fr);
   }
   
   .color-picker {
@@ -831,6 +794,37 @@ a:hover {
   background: rgba(255, 221, 0, 0.1);
   border-color: #ffdd00;
 }
+
+/* Status Message */
+.status-message {
+  padding: 10px;
+  margin: 10px 0;
+  border-radius: 5px;
+  text-align: center;
+  font-size: 14px;
+  display: none;
+}
+
+.status-message.success {
+  background: rgba(0, 255, 0, 0.1);
+  border: 1px solid #00ff00;
+  color: #00ff00;
+  display: block;
+}
+
+.status-message.error {
+  background: rgba(255, 0, 0, 0.1);
+  border: 1px solid #ff0000;
+  color: #ff0000;
+  display: block;
+}
+
+.status-message.info {
+  background: rgba(255, 221, 0, 0.1);
+  border: 1px solid #ffdd00;
+  color: #ffdd00;
+  display: block;
+}
 </style>
 </head>
 <body class="yellow-glow-theme">
@@ -851,8 +845,16 @@ a:hover {
     <h2 style="color: #ffdd00; text-shadow: 0 0 10px rgba(255,221,0,0.7);">Customize Profile</h2>
     
     <div class="profile-form">
+      <!-- Status Messages -->
+      <div id="profileStatus" class="status-message"></div>
+      
       <!-- Avatar Preview -->
-      <img id="avatarPreview" class="profile-avatar-preview" src="" alt="Avatar Preview">
+      <div class="avatar-preview-container">
+        <img id="avatarPreview" class="profile-avatar-preview" src="" alt="Avatar Preview">
+        <div class="avatar-preview-overlay" onclick="document.getElementById('avatarUpload').click()">
+          <span>Click to<br>Upload Image</span>
+        </div>
+      </div>
       
       <!-- Hidden file input -->
       <input type="file" id="avatarUpload" accept="image/*" style="display: none;" onchange="handleAvatarUpload(event)">
@@ -886,16 +888,10 @@ a:hover {
         <div class="color-option" style="background: #ffcc00;" onclick="selectColor('#ffcc00')"></div>
       </div>
       
-      <label style="color: #ffdd00; display: block; margin-top: 15px;">Choose default avatar:</label>
-      <div class="avatar-options" id="avatarOptions">
-        <!-- Avatars will be populated by JavaScript -->
-      </div>
-      
       <label style="color: #ffdd00; display: block; margin-top: 15px;">Custom Avatar URL (optional):</label>
-      <input type="text" id="customAvatarUrl" placeholder="Or paste image URL here">
+      <input type="text" id="customAvatarUrl" placeholder="Paste image URL here">
       
       <button onclick="saveProfile()" style="margin-top: 20px;" id="saveProfileBtn">Save Profile</button>
-      <p id="profileMessage" style="text-align: center; margin-top: 10px; color: #ffdd00;"></p>
     </div>
   </div>
 </div>
@@ -915,7 +911,9 @@ a:hover {
 
   <!-- PROFILE PAGE -->
   <div id="profile" class="page" style="padding: 20px;">
-    <div id="profileDisplay"></div>
+    <div id="profileDisplay">
+      <div class="loading"></div>
+    </div>
     <button onclick="openProfileModal()" style="width: auto; align-self: flex-start; margin-top: 20px;">Edit Profile</button>
   </div>
 
@@ -976,32 +974,23 @@ let currentMediaUrl = '';
 let currentMediaType = '';
 let currentVideoIndex = 0;
 let uploadedAvatarFile = null;
-let selectedAvatar = '';
 let selectedColor = '#ffdd00';
+
+// Default placeholder avatar
+const defaultAvatar = 'https://api.dicebear.com/7.x/avataaars/svg?seed=zeroday&backgroundColor=ffdd00&size=120';
 
 // User profile data
 let userProfile = {
   username: '',
   bio: '',
-  avatar: '',
+  avatar: defaultAvatar,
   themeColor: '#ffdd00',
   postCount: 0,
   joinDate: ''
 };
 
-// Default avatars with yellow theme
-const defaultAvatars = [
-  'https://api.dicebear.com/7.x/avataaars/svg?seed=zero1&backgroundColor=ffdd00',
-  'https://api.dicebear.com/7.x/avataaars/svg?seed=zero2&backgroundColor=ffaa00',
-  'https://api.dicebear.com/7.x/avataaars/svg?seed=zero3&backgroundColor=ff8800',
-  'https://api.dicebear.com/7.x/avataaars/svg?seed=zero4&backgroundColor=ffcc00',
-  'https://api.dicebear.com/7.x/avataaars/svg?seed=zero5&backgroundColor=ffff00',
-  'https://api.dicebear.com/7.x/avataaars/svg?seed=zero6&backgroundColor=ffdd00'
-];
-
 // Initialize on page load
 document.addEventListener('DOMContentLoaded', () => {
-  loadAvatarOptions();
   setupDragAndDrop();
   show('login');
   
@@ -1009,22 +998,17 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('avatarUploadArea').addEventListener('click', function() {
     document.getElementById('avatarUpload').click();
   });
-});
-
-// Load avatar options
-function loadAvatarOptions() {
-  const container = document.getElementById('avatarOptions');
-  container.innerHTML = '';
   
-  defaultAvatars.forEach((avatar, index) => {
-    const img = document.createElement('img');
-    img.className = 'avatar-option';
-    img.src = avatar;
-    img.alt = `Avatar ${index + 1}`;
-    img.onclick = () => selectDefaultAvatar(avatar, index);
-    container.appendChild(img);
-  });
-}
+  // Initialize avatar preview overlay
+  const avatarPreview = document.getElementById('avatarPreview');
+  const avatarOverlay = document.querySelector('.avatar-preview-overlay');
+  
+  if (avatarPreview && avatarOverlay) {
+    avatarPreview.addEventListener('click', function() {
+      document.getElementById('avatarUpload').click();
+    });
+  }
+});
 
 // Setup drag and drop for avatar upload
 function setupDragAndDrop() {
@@ -1067,18 +1051,32 @@ function handleDrop(e) {
   }
 }
 
+// Show status message
+function showStatus(message, type = 'info') {
+  const statusDiv = document.getElementById('profileStatus');
+  statusDiv.textContent = message;
+  statusDiv.className = 'status-message ' + type;
+  statusDiv.style.display = 'block';
+  
+  if (type === 'success') {
+    setTimeout(() => {
+      statusDiv.style.display = 'none';
+    }, 3000);
+  }
+}
+
 // Handle avatar upload from file input
 function handleAvatarUpload(event) {
   const file = event.target.files[0];
   if (!file) return;
   
   if (!file.type.startsWith('image/')) {
-    alert('Please upload an image file (PNG, JPG, GIF)');
+    showStatus('Please upload an image file (PNG, JPG, GIF)', 'error');
     return;
   }
   
   if (file.size > 5 * 1024 * 1024) {
-    alert('File size too large. Maximum size is 5MB.');
+    showStatus('File size too large. Maximum size is 5MB.', 'error');
     return;
   }
   
@@ -1089,13 +1087,13 @@ function handleAvatarUpload(event) {
     const preview = document.getElementById('avatarPreview');
     preview.src = e.target.result;
     
-    // Clear default avatar selection
-    document.querySelectorAll('.avatar-option').forEach(option => {
-      option.classList.remove('selected');
-    });
-    
     // Clear custom URL
     document.getElementById('customAvatarUrl').value = '';
+    
+    showStatus('Image ready for upload. Click Save Profile to upload.', 'info');
+  };
+  reader.onerror = function() {
+    showStatus('Error reading file. Please try again.', 'error');
   };
   reader.readAsDataURL(file);
 }
@@ -1107,14 +1105,13 @@ async function uploadAvatarToStorage(userId) {
   const uploadProgress = document.getElementById('uploadProgress');
   const progressBar = document.getElementById('uploadProgressBar');
   const saveBtn = document.getElementById('saveProfileBtn');
-  const message = document.getElementById('profileMessage');
   
   // Show progress bar
   uploadProgress.style.display = 'block';
   progressBar.style.width = '0%';
   saveBtn.disabled = true;
   saveBtn.textContent = 'Uploading...';
-  message.textContent = 'Uploading avatar...';
+  showStatus('Uploading avatar...', 'info');
   
   try {
     // Create a unique filename
@@ -1137,7 +1134,7 @@ async function uploadAvatarToStorage(userId) {
           uploadProgress.style.display = 'none';
           saveBtn.disabled = false;
           saveBtn.textContent = 'Save Profile';
-          message.textContent = 'Upload failed: ' + error.message;
+          showStatus('Upload failed: ' + error.message, 'error');
           reject(error);
         },
         async () => {
@@ -1146,7 +1143,7 @@ async function uploadAvatarToStorage(userId) {
           uploadProgress.style.display = 'none';
           saveBtn.disabled = false;
           saveBtn.textContent = 'Save Profile';
-          message.textContent = 'Upload complete!';
+          showStatus('Avatar uploaded successfully!', 'success');
           
           resolve(downloadURL);
         }
@@ -1154,27 +1151,9 @@ async function uploadAvatarToStorage(userId) {
     });
   } catch (error) {
     console.error('Upload error:', error);
-    message.textContent = 'Failed to upload avatar. Please try again.';
+    showStatus('Failed to upload avatar. Please try again.', 'error');
     return null;
   }
-}
-
-// Select default avatar
-function selectDefaultAvatar(avatarUrl, index) {
-  uploadedAvatarFile = null; // Clear uploaded file
-  selectedAvatar = avatarUrl;
-  document.getElementById('avatarPreview').src = avatarUrl;
-  
-  // Update selection
-  document.querySelectorAll('.avatar-option').forEach((option, i) => {
-    option.classList.remove('selected');
-    if (i === index) {
-      option.classList.add('selected');
-    }
-  });
-  
-  // Clear custom URL
-  document.getElementById('customAvatarUrl').value = '';
 }
 
 // PROFILE MODAL FUNCTIONS
@@ -1183,7 +1162,7 @@ function openProfileModal() {
   const user = auth.currentUser;
   
   if (!user) {
-    alert('Please login to edit your profile');
+    showStatus('Please login to edit your profile', 'error');
     return;
   }
   
@@ -1192,8 +1171,7 @@ function openProfileModal() {
   const uploadProgress = document.getElementById('uploadProgress');
   uploadProgress.style.display = 'none';
   
-  const message = document.getElementById('profileMessage');
-  message.textContent = '';
+  showStatus('Loading profile...', 'info');
   
   // Load current profile data
   loadUserProfile(user.uid).then(profile => {
@@ -1202,11 +1180,10 @@ function openProfileModal() {
     document.getElementById('customAvatarUrl').value = '';
     
     // Set avatar preview
-    const avatarUrl = profile.avatar || defaultAvatars[0];
+    const avatarUrl = profile.avatar || defaultAvatar;
     document.getElementById('avatarPreview').src = avatarUrl;
     
-    // Set selected avatar and color
-    selectedAvatar = avatarUrl;
+    // Set selected color
     selectedColor = profile.themeColor || '#ffdd00';
     
     // Update color picker
@@ -1217,20 +1194,14 @@ function openProfileModal() {
       }
     });
     
-    // Update avatar selection if it's a default avatar
-    document.querySelectorAll('.avatar-option').forEach((option, index) => {
-      option.classList.remove('selected');
-      if (option.src === selectedAvatar) {
-        option.classList.add('selected');
-      }
-    });
-    
     // Enable save button
     const saveBtn = document.getElementById('saveProfileBtn');
     saveBtn.disabled = false;
     saveBtn.textContent = 'Save Profile';
+    
+    showStatus('Profile loaded. Make your changes and click Save.', 'info');
   }).catch(error => {
-    message.textContent = 'Error loading profile: ' + error.message;
+    showStatus('Error loading profile: ' + error.message, 'error');
   });
   
   modal.classList.add('active');
@@ -1241,6 +1212,10 @@ function closeProfileModal() {
   const modal = document.getElementById('profileModal');
   modal.classList.remove('active');
   document.body.style.overflow = '';
+  
+  // Clear status message
+  const statusDiv = document.getElementById('profileStatus');
+  statusDiv.style.display = 'none';
 }
 
 function selectColor(color) {
@@ -1259,7 +1234,7 @@ function selectColor(color) {
 async function saveProfile() {
   const user = auth.currentUser;
   if (!user) {
-    alert('Please login to save your profile');
+    showStatus('Please login to save your profile', 'error');
     return;
   }
   
@@ -1268,37 +1243,46 @@ async function saveProfile() {
   const customAvatarUrl = document.getElementById('customAvatarUrl').value.trim();
   
   const saveBtn = document.getElementById('saveProfileBtn');
-  const message = document.getElementById('profileMessage');
   
   saveBtn.disabled = true;
   saveBtn.textContent = 'Saving...';
-  message.textContent = 'Saving profile...';
+  showStatus('Saving profile...', 'info');
   
   try {
-    let avatarUrl = userProfile.avatar || defaultAvatars[0];
+    let avatarUrl = userProfile.avatar || defaultAvatar;
     
-    // Determine which avatar to use (priority: uploaded file > custom URL > selected default > current)
+    // Determine which avatar to use (priority: uploaded file > custom URL > current)
     if (uploadedAvatarFile) {
       // Upload new avatar to Firebase Storage
-      message.textContent = 'Uploading avatar...';
       avatarUrl = await uploadAvatarToStorage(user.uid);
       if (!avatarUrl) {
-        message.textContent = 'Failed to upload avatar';
         saveBtn.disabled = false;
         saveBtn.textContent = 'Save Profile';
         return;
       }
     } else if (customAvatarUrl) {
-      // Use custom URL
-      avatarUrl = customAvatarUrl;
-    } else if (selectedAvatar) {
-      // Use selected default avatar
-      avatarUrl = selectedAvatar;
+      // Use custom URL (validate it's a valid URL)
+      if (customAvatarUrl.startsWith('http://') || customAvatarUrl.startsWith('https://')) {
+        avatarUrl = customAvatarUrl;
+      } else {
+        showStatus('Please enter a valid URL starting with http:// or https://', 'error');
+        saveBtn.disabled = false;
+        saveBtn.textContent = 'Save Profile';
+        return;
+      }
+    }
+    
+    // Validate username
+    if (!username) {
+      showStatus('Username is required', 'error');
+      saveBtn.disabled = false;
+      saveBtn.textContent = 'Save Profile';
+      return;
     }
     
     // Update user profile in Firestore
     const profileData = {
-      username: username || user.email.split('@')[0],
+      username: username,
       bio: bio,
       avatar: avatarUrl,
       themeColor: selectedColor,
@@ -1319,8 +1303,7 @@ async function saveProfile() {
     // Update posts with new username and avatar
     updateUserPosts(profileData.username, profileData.avatar);
     
-    message.textContent = 'Profile saved successfully!';
-    message.style.color = '#00ff00';
+    showStatus('Profile saved successfully!', 'success');
     
     // Close modal after success
     setTimeout(() => {
@@ -1329,8 +1312,7 @@ async function saveProfile() {
     
   } catch (error) {
     console.error('Error saving profile:', error);
-    message.textContent = 'Error saving profile: ' + error.message;
-    message.style.color = '#ff0000';
+    showStatus('Error saving profile: ' + error.message, 'error');
   } finally {
     saveBtn.disabled = false;
     saveBtn.textContent = 'Save Profile';
@@ -1347,17 +1329,17 @@ async function updateUserPosts(username, avatar) {
       .where('author', '==', user.email)
       .get();
     
-    const batch = db.batch();
-    
-    postsQuery.forEach(doc => {
-      const postRef = db.collection('posts').doc(doc.id);
-      batch.update(postRef, {
-        authorUsername: username,
-        authorAvatar: avatar
-      });
-    });
-    
     if (postsQuery.size > 0) {
+      const batch = db.batch();
+      
+      postsQuery.forEach(doc => {
+        const postRef = db.collection('posts').doc(doc.id);
+        batch.update(postRef, {
+          authorUsername: username,
+          authorAvatar: avatar
+        });
+      });
+      
       await batch.commit();
       console.log(`Updated ${postsQuery.size} posts with new profile info`);
     }
@@ -1372,26 +1354,22 @@ async function loadUserProfile(uid) {
     const doc = await db.collection('profiles').doc(uid).get();
     
     if (doc.exists) {
-      userProfile = { ...userProfile, ...doc.data() };
-      
-      // Ensure required fields exist
-      if (!userProfile.username) {
-        const user = auth.currentUser;
-        userProfile.username = user.email.split('@')[0];
-      }
-      if (!userProfile.avatar) {
-        userProfile.avatar = defaultAvatars[0];
-      }
-      if (!userProfile.themeColor) {
-        userProfile.themeColor = '#ffdd00';
-      }
+      const data = doc.data();
+      userProfile = {
+        username: data.username || auth.currentUser.email.split('@')[0],
+        bio: data.bio || '',
+        avatar: data.avatar || defaultAvatar,
+        themeColor: data.themeColor || '#ffdd00',
+        joinDate: data.joinDate || new Date().toLocaleDateString(),
+        postCount: data.postCount || 0
+      };
     } else {
       // Create default profile
       const user = auth.currentUser;
       userProfile = {
         username: user.email.split('@')[0],
         bio: '',
-        avatar: defaultAvatars[Math.floor(Math.random() * defaultAvatars.length)],
+        avatar: defaultAvatar,
         themeColor: '#ffdd00',
         joinDate: new Date().toLocaleDateString(),
         postCount: 0
@@ -1404,16 +1382,30 @@ async function loadUserProfile(uid) {
       });
     }
     
-    // Load post count
+    // Load actual post count
     const posts = await db.collection('posts')
       .where('author', '==', auth.currentUser.email)
       .get();
     userProfile.postCount = posts.size;
     
+    // Update post count in profile
+    await db.collection('profiles').doc(uid).update({
+      postCount: userProfile.postCount
+    });
+    
     return userProfile;
   } catch (error) {
     console.error('Error loading profile:', error);
-    return userProfile;
+    // Return basic profile even on error
+    const user = auth.currentUser;
+    return {
+      username: user.email.split('@')[0],
+      bio: '',
+      avatar: defaultAvatar,
+      themeColor: '#ffdd00',
+      joinDate: new Date().toLocaleDateString(),
+      postCount: 0
+    };
   }
 }
 
@@ -1426,7 +1418,7 @@ function updateProfileDisplay() {
   
   // Ensure we have valid data
   const displayUsername = userProfile.username || user.email.split('@')[0];
-  const displayAvatar = userProfile.avatar || defaultAvatars[0];
+  const displayAvatar = userProfile.avatar || defaultAvatar;
   const displayBio = userProfile.bio || 'No bio yet. Click Edit Profile to add one!';
   const displayPostCount = userProfile.postCount || 0;
   const displayJoinDate = userProfile.joinDate || new Date().toLocaleDateString();
@@ -1446,10 +1438,6 @@ function updateProfileDisplay() {
           <div class="stat">
             <span class="stat-value">${displayJoinDate}</span>
             <span>Joined</span>
-          </div>
-          <div class="stat">
-            <span class="stat-value" id="followingCount">0</span>
-            <span>Following</span>
           </div>
         </div>
       </div>
@@ -1571,7 +1559,7 @@ async function loadTikTokPosts() {
       const isAndre = p.author === 'exoticslash3r@gmail.com';
       const tagClass = isAndre ? 'tiktok-tag andre-tag' : 'tiktok-tag';
       const tagText = isAndre ? 'AndreKriegman' : (p.authorUsername || p.author.split('@')[0]);
-      const avatar = p.authorAvatar || defaultAvatars[0];
+      const avatar = p.authorAvatar || defaultAvatar;
       
       postDiv.innerHTML = `
         <div class="tiktok-media-container">
@@ -1715,7 +1703,7 @@ async function signup(){
     await db.collection('profiles').doc(user.uid).set({
       username: username || email.split('@')[0],
       bio: '',
-      avatar: defaultAvatars[Math.floor(Math.random() * defaultAvatars.length)],
+      avatar: defaultAvatar,
       themeColor: '#ffdd00',
       joinDate: new Date().toLocaleDateString(),
       createdAt: firebase.firestore.FieldValue.serverTimestamp()
@@ -1771,7 +1759,7 @@ function publish(){
   r.onload=()=>{
     // Use profile data if available, otherwise use defaults
     const authorUsername = userProfile.username || user.email.split('@')[0];
-    const authorAvatar = userProfile.avatar || defaultAvatars[0];
+    const authorAvatar = userProfile.avatar || defaultAvatar;
     
     db.collection("posts").add({
       title:t,
@@ -1787,6 +1775,12 @@ function publish(){
       document.querySelector('.file-input-label').textContent = '📁 Choose file or drag and drop';
       alert('Post published successfully!');
       show('home');
+      
+      // Update post count
+      userProfile.postCount = (userProfile.postCount || 0) + 1;
+      db.collection('profiles').doc(user.uid).update({
+        postCount: userProfile.postCount
+      });
     }).catch(e => {
       alert('Error: ' + e.message);
     }).finally(() => {
