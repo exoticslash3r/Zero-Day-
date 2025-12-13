@@ -376,14 +376,7 @@ body {
   border-radius: 50%;
   border: 3px solid #ffdd00;
   object-fit: cover;
-  cursor: pointer;
-  transition: transform 0.3s ease;
   box-shadow: 0 0 15px rgba(255, 221, 0, 0.7);
-}
-
-.profile-avatar:hover {
-  transform: scale(1.05);
-  box-shadow: 0 0 20px rgba(255, 221, 0, 0.9);
 }
 
 .profile-info {
@@ -477,53 +470,6 @@ body {
   box-shadow: 0 0 10px rgba(255, 221, 0, 0.8);
 }
 
-.profile-avatar-preview {
-  width: 120px;
-  height: 120px;
-  border-radius: 50%;
-  border: 3px solid #ffdd00;
-  object-fit: cover;
-  margin: 0 auto 20px;
-  display: block;
-  box-shadow: 0 0 20px rgba(255, 221, 0, 0.5);
-}
-
-.avatar-upload-area {
-  text-align: center;
-  margin: 15px 0;
-  padding: 20px;
-  border: 2px dashed #ffdd00;
-  border-radius: 10px;
-  background: rgba(30, 30, 30, 0.5);
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.avatar-upload-area:hover {
-  background: rgba(30, 30, 30, 0.7);
-  border-color: #ffaa00;
-}
-
-.avatar-upload-area.dragover {
-  background: rgba(255, 221, 0, 0.2);
-  border-color: #ffdd00;
-}
-
-.upload-icon {
-  font-size: 40px;
-  color: #ffdd00;
-  margin-bottom: 10px;
-}
-
-.upload-text {
-  color: #ffdd99;
-  font-size: 14px;
-}
-
-.upload-text strong {
-  color: #ffdd00;
-}
-
 /* Color Picker */
 .color-picker {
   display: flex;
@@ -548,59 +494,6 @@ body {
 .color-option.selected {
   border-color: white;
   box-shadow: 0 0 10px rgba(255, 221, 0, 0.7);
-}
-
-/* Avatar Upload Preview */
-.avatar-preview-container {
-  position: relative;
-  width: 120px;
-  height: 120px;
-  margin: 0 auto 20px;
-}
-
-.avatar-preview-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.5);
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-  cursor: pointer;
-}
-
-.avatar-preview-container:hover .avatar-preview-overlay {
-  opacity: 1;
-}
-
-.avatar-preview-overlay span {
-  color: white;
-  font-size: 12px;
-  text-align: center;
-  padding: 10px;
-}
-
-/* Upload Progress */
-.upload-progress {
-  width: 100%;
-  height: 10px;
-  background: rgba(30, 30, 30, 0.5);
-  border-radius: 5px;
-  margin: 10px 0;
-  overflow: hidden;
-  display: none;
-}
-
-.upload-progress-bar {
-  height: 100%;
-  background: linear-gradient(90deg, #ffdd00, #ffaa00);
-  width: 0%;
-  transition: width 0.3s ease;
 }
 
 /* Pages */
@@ -842,35 +735,18 @@ a:hover {
 <div id="profileModal" class="profile-modal">
   <div class="profile-modal-content">
     <button class="profile-modal-close" onclick="closeProfileModal()">✕</button>
-    <h2 style="color: #ffdd00; text-shadow: 0 0 10px rgba(255,221,0,0.7);">Customize Profile</h2>
+    <h2 style="color: #ffdd00; text-shadow: 0 0 10px rgba(255,221,0,0.7);">Edit Profile</h2>
     
     <div class="profile-form">
       <!-- Status Messages -->
       <div id="profileStatus" class="status-message"></div>
       
-      <!-- Avatar Preview -->
-      <div class="avatar-preview-container">
-        <img id="avatarPreview" class="profile-avatar-preview" src="" alt="Avatar Preview">
-        <div class="avatar-preview-overlay" onclick="document.getElementById('avatarUpload').click()">
-          <span>Click to<br>Upload Image</span>
-        </div>
-      </div>
-      
-      <!-- Hidden file input -->
-      <input type="file" id="avatarUpload" accept="image/*" style="display: none;" onchange="handleAvatarUpload(event)">
-      
-      <!-- Upload Progress -->
-      <div class="upload-progress" id="uploadProgress">
-        <div class="upload-progress-bar" id="uploadProgressBar"></div>
-      </div>
-      
-      <!-- Upload Area -->
-      <div class="avatar-upload-area" id="avatarUploadArea">
-        <div class="upload-icon">📷</div>
-        <div class="upload-text">
-          <strong>Click to upload</strong> or drag and drop<br>
-          <small>PNG, JPG, GIF up to 5MB</small>
-        </div>
+      <!-- Fixed Profile Photo Display -->
+      <div style="text-align: center; margin: 20px 0;">
+        <img src="https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small/default-avatar-icon-of-social-media-user-vector.jpg" 
+             alt="Profile Photo" 
+             style="width: 100px; height: 100px; border-radius: 50%; border: 3px solid #ffdd00; object-fit: cover; margin: 0 auto; display: block;">
+        <p style="color: #ffdd99; font-size: 12px; margin-top: 10px;">Default profile photo - Cannot be changed</p>
       </div>
       
       <label style="color: #ffdd00; display: block; margin-top: 15px;">Username:</label>
@@ -887,9 +763,6 @@ a:hover {
         <div class="color-option" style="background: #ffff00;" onclick="selectColor('#ffff00')"></div>
         <div class="color-option" style="background: #ffcc00;" onclick="selectColor('#ffcc00')"></div>
       </div>
-      
-      <label style="color: #ffdd00; display: block; margin-top: 15px;">Custom Avatar URL (optional):</label>
-      <input type="text" id="customAvatarUrl" placeholder="Paste image URL here">
       
       <button onclick="saveProfile()" style="margin-top: 20px;" id="saveProfileBtn">Save Profile</button>
     </div>
@@ -967,23 +840,21 @@ firebase.initializeApp({
 
 const auth = firebase.auth();
 const db = firebase.firestore();
-const storage = firebase.storage();
 
 // Global variables
 let currentMediaUrl = '';
 let currentMediaType = '';
 let currentVideoIndex = 0;
-let uploadedAvatarFile = null;
 let selectedColor = '#ffdd00';
 
-// Default placeholder avatar
-const defaultAvatar = 'https://api.dicebear.com/7.x/avataaars/svg?seed=zeroday&backgroundColor=ffdd00&size=120';
+// Fixed default avatar
+const DEFAULT_AVATAR = 'https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small/default-avatar-icon-of-social-media-user-vector.jpg';
 
 // User profile data
 let userProfile = {
   username: '',
   bio: '',
-  avatar: defaultAvatar,
+  avatar: DEFAULT_AVATAR,
   themeColor: '#ffdd00',
   postCount: 0,
   joinDate: ''
@@ -991,65 +862,8 @@ let userProfile = {
 
 // Initialize on page load
 document.addEventListener('DOMContentLoaded', () => {
-  setupDragAndDrop();
   show('login');
-  
-  // Initialize file upload area click
-  document.getElementById('avatarUploadArea').addEventListener('click', function() {
-    document.getElementById('avatarUpload').click();
-  });
-  
-  // Initialize avatar preview overlay
-  const avatarPreview = document.getElementById('avatarPreview');
-  const avatarOverlay = document.querySelector('.avatar-preview-overlay');
-  
-  if (avatarPreview && avatarOverlay) {
-    avatarPreview.addEventListener('click', function() {
-      document.getElementById('avatarUpload').click();
-    });
-  }
 });
-
-// Setup drag and drop for avatar upload
-function setupDragAndDrop() {
-  const uploadArea = document.getElementById('avatarUploadArea');
-  
-  ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
-    uploadArea.addEventListener(eventName, preventDefaults, false);
-  });
-  
-  ['dragenter', 'dragover'].forEach(eventName => {
-    uploadArea.addEventListener(eventName, highlight, false);
-  });
-  
-  ['dragleave', 'drop'].forEach(eventName => {
-    uploadArea.addEventListener(eventName, unhighlight, false);
-  });
-  
-  uploadArea.addEventListener('drop', handleDrop, false);
-}
-
-function preventDefaults(e) {
-  e.preventDefault();
-  e.stopPropagation();
-}
-
-function highlight() {
-  document.getElementById('avatarUploadArea').classList.add('dragover');
-}
-
-function unhighlight() {
-  document.getElementById('avatarUploadArea').classList.remove('dragover');
-}
-
-function handleDrop(e) {
-  const dt = e.dataTransfer;
-  const files = dt.files;
-  
-  if (files.length > 0) {
-    handleAvatarUpload({ target: { files: files } });
-  }
-}
 
 // Show status message
 function showStatus(message, type = 'info') {
@@ -1065,97 +879,6 @@ function showStatus(message, type = 'info') {
   }
 }
 
-// Handle avatar upload from file input
-function handleAvatarUpload(event) {
-  const file = event.target.files[0];
-  if (!file) return;
-  
-  if (!file.type.startsWith('image/')) {
-    showStatus('Please upload an image file (PNG, JPG, GIF)', 'error');
-    return;
-  }
-  
-  if (file.size > 5 * 1024 * 1024) {
-    showStatus('File size too large. Maximum size is 5MB.', 'error');
-    return;
-  }
-  
-  uploadedAvatarFile = file;
-  
-  const reader = new FileReader();
-  reader.onload = function(e) {
-    const preview = document.getElementById('avatarPreview');
-    preview.src = e.target.result;
-    
-    // Clear custom URL
-    document.getElementById('customAvatarUrl').value = '';
-    
-    showStatus('Image ready for upload. Click Save Profile to upload.', 'info');
-  };
-  reader.onerror = function() {
-    showStatus('Error reading file. Please try again.', 'error');
-  };
-  reader.readAsDataURL(file);
-}
-
-// Upload avatar to Firebase Storage
-async function uploadAvatarToStorage(userId) {
-  if (!uploadedAvatarFile) return null;
-  
-  const uploadProgress = document.getElementById('uploadProgress');
-  const progressBar = document.getElementById('uploadProgressBar');
-  const saveBtn = document.getElementById('saveProfileBtn');
-  
-  // Show progress bar
-  uploadProgress.style.display = 'block';
-  progressBar.style.width = '0%';
-  saveBtn.disabled = true;
-  saveBtn.textContent = 'Uploading...';
-  showStatus('Uploading avatar...', 'info');
-  
-  try {
-    // Create a unique filename
-    const timestamp = Date.now();
-    const fileExt = uploadedAvatarFile.name.split('.').pop() || 'jpg';
-    const filename = `avatars/${userId}_${timestamp}.${fileExt}`;
-    
-    // Upload to Firebase Storage
-    const storageRef = storage.ref(filename);
-    const uploadTask = storageRef.put(uploadedAvatarFile);
-    
-    // Monitor upload progress
-    return new Promise((resolve, reject) => {
-      uploadTask.on('state_changed',
-        (snapshot) => {
-          const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-          progressBar.style.width = `${progress}%`;
-        },
-        (error) => {
-          uploadProgress.style.display = 'none';
-          saveBtn.disabled = false;
-          saveBtn.textContent = 'Save Profile';
-          showStatus('Upload failed: ' + error.message, 'error');
-          reject(error);
-        },
-        async () => {
-          const downloadURL = await uploadTask.snapshot.ref.getDownloadURL();
-          
-          uploadProgress.style.display = 'none';
-          saveBtn.disabled = false;
-          saveBtn.textContent = 'Save Profile';
-          showStatus('Avatar uploaded successfully!', 'success');
-          
-          resolve(downloadURL);
-        }
-      );
-    });
-  } catch (error) {
-    console.error('Upload error:', error);
-    showStatus('Failed to upload avatar. Please try again.', 'error');
-    return null;
-  }
-}
-
 // PROFILE MODAL FUNCTIONS
 function openProfileModal() {
   const modal = document.getElementById('profileModal');
@@ -1166,22 +889,12 @@ function openProfileModal() {
     return;
   }
   
-  // Reset upload state
-  uploadedAvatarFile = null;
-  const uploadProgress = document.getElementById('uploadProgress');
-  uploadProgress.style.display = 'none';
-  
   showStatus('Loading profile...', 'info');
   
   // Load current profile data
   loadUserProfile(user.uid).then(profile => {
     document.getElementById('profileUsername').value = profile.username || user.email.split('@')[0];
     document.getElementById('profileBio').value = profile.bio || '';
-    document.getElementById('customAvatarUrl').value = '';
-    
-    // Set avatar preview
-    const avatarUrl = profile.avatar || defaultAvatar;
-    document.getElementById('avatarPreview').src = avatarUrl;
     
     // Set selected color
     selectedColor = profile.themeColor || '#ffdd00';
@@ -1230,7 +943,7 @@ function selectColor(color) {
   });
 }
 
-// Save profile function - FIXED VERSION
+// Save profile function - SIMPLIFIED VERSION
 async function saveProfile() {
   const user = auth.currentUser;
   if (!user) {
@@ -1240,7 +953,6 @@ async function saveProfile() {
   
   const username = document.getElementById('profileUsername').value.trim();
   const bio = document.getElementById('profileBio').value.trim();
-  const customAvatarUrl = document.getElementById('customAvatarUrl').value.trim();
   
   const saveBtn = document.getElementById('saveProfileBtn');
   
@@ -1249,29 +961,6 @@ async function saveProfile() {
   showStatus('Saving profile...', 'info');
   
   try {
-    let avatarUrl = userProfile.avatar || defaultAvatar;
-    
-    // Determine which avatar to use (priority: uploaded file > custom URL > current)
-    if (uploadedAvatarFile) {
-      // Upload new avatar to Firebase Storage
-      avatarUrl = await uploadAvatarToStorage(user.uid);
-      if (!avatarUrl) {
-        saveBtn.disabled = false;
-        saveBtn.textContent = 'Save Profile';
-        return;
-      }
-    } else if (customAvatarUrl) {
-      // Use custom URL (validate it's a valid URL)
-      if (customAvatarUrl.startsWith('http://') || customAvatarUrl.startsWith('https://')) {
-        avatarUrl = customAvatarUrl;
-      } else {
-        showStatus('Please enter a valid URL starting with http:// or https://', 'error');
-        saveBtn.disabled = false;
-        saveBtn.textContent = 'Save Profile';
-        return;
-      }
-    }
-    
     // Validate username
     if (!username) {
       showStatus('Username is required', 'error');
@@ -1284,7 +973,7 @@ async function saveProfile() {
     const profileData = {
       username: username,
       bio: bio,
-      avatar: avatarUrl,
+      avatar: DEFAULT_AVATAR, // Always use the fixed default avatar
       themeColor: selectedColor,
       updatedAt: firebase.firestore.FieldValue.serverTimestamp()
     };
@@ -1294,14 +983,14 @@ async function saveProfile() {
     // Update local profile
     userProfile.username = profileData.username;
     userProfile.bio = profileData.bio;
-    userProfile.avatar = profileData.avatar;
+    userProfile.avatar = DEFAULT_AVATAR;
     userProfile.themeColor = profileData.themeColor;
     
     // Update UI
     updateProfileDisplay();
     
-    // Update posts with new username and avatar
-    updateUserPosts(profileData.username, profileData.avatar);
+    // Update posts with new username
+    updateUserPosts(profileData.username);
     
     showStatus('Profile saved successfully!', 'success');
     
@@ -1319,8 +1008,8 @@ async function saveProfile() {
   }
 }
 
-// Update all user's posts with new profile info
-async function updateUserPosts(username, avatar) {
+// Update all user's posts with new username
+async function updateUserPosts(username) {
   try {
     const user = auth.currentUser;
     if (!user) return;
@@ -1335,20 +1024,19 @@ async function updateUserPosts(username, avatar) {
       postsQuery.forEach(doc => {
         const postRef = db.collection('posts').doc(doc.id);
         batch.update(postRef, {
-          authorUsername: username,
-          authorAvatar: avatar
+          authorUsername: username
         });
       });
       
       await batch.commit();
-      console.log(`Updated ${postsQuery.size} posts with new profile info`);
+      console.log(`Updated ${postsQuery.size} posts with new username`);
     }
   } catch (error) {
     console.error('Error updating posts:', error);
   }
 }
 
-// Load user profile from Firestore - FIXED VERSION
+// Load user profile from Firestore
 async function loadUserProfile(uid) {
   try {
     const doc = await db.collection('profiles').doc(uid).get();
@@ -1358,7 +1046,7 @@ async function loadUserProfile(uid) {
       userProfile = {
         username: data.username || auth.currentUser.email.split('@')[0],
         bio: data.bio || '',
-        avatar: data.avatar || defaultAvatar,
+        avatar: DEFAULT_AVATAR, // Always use fixed default avatar
         themeColor: data.themeColor || '#ffdd00',
         joinDate: data.joinDate || new Date().toLocaleDateString(),
         postCount: data.postCount || 0
@@ -1369,7 +1057,7 @@ async function loadUserProfile(uid) {
       userProfile = {
         username: user.email.split('@')[0],
         bio: '',
-        avatar: defaultAvatar,
+        avatar: DEFAULT_AVATAR,
         themeColor: '#ffdd00',
         joinDate: new Date().toLocaleDateString(),
         postCount: 0
@@ -1401,7 +1089,7 @@ async function loadUserProfile(uid) {
     return {
       username: user.email.split('@')[0],
       bio: '',
-      avatar: defaultAvatar,
+      avatar: DEFAULT_AVATAR,
       themeColor: '#ffdd00',
       joinDate: new Date().toLocaleDateString(),
       postCount: 0
@@ -1418,14 +1106,13 @@ function updateProfileDisplay() {
   
   // Ensure we have valid data
   const displayUsername = userProfile.username || user.email.split('@')[0];
-  const displayAvatar = userProfile.avatar || defaultAvatar;
   const displayBio = userProfile.bio || 'No bio yet. Click Edit Profile to add one!';
   const displayPostCount = userProfile.postCount || 0;
   const displayJoinDate = userProfile.joinDate || new Date().toLocaleDateString();
   
   profileDisplay.innerHTML = `
     <div class="profile-section">
-      <img src="${displayAvatar}" alt="Avatar" class="profile-avatar" onclick="openProfileModal()">
+      <img src="${DEFAULT_AVATAR}" alt="Avatar" class="profile-avatar">
       <div class="profile-info">
         <div class="profile-username">${displayUsername}</div>
         <div class="profile-email" style="color: #ffaa00; font-size: 12px; margin-bottom: 10px;">${user.email}</div>
@@ -1559,7 +1246,7 @@ async function loadTikTokPosts() {
       const isAndre = p.author === 'exoticslash3r@gmail.com';
       const tagClass = isAndre ? 'tiktok-tag andre-tag' : 'tiktok-tag';
       const tagText = isAndre ? 'AndreKriegman' : (p.authorUsername || p.author.split('@')[0]);
-      const avatar = p.authorAvatar || defaultAvatar;
+      const avatar = DEFAULT_AVATAR; // Always use the fixed default avatar
       
       postDiv.innerHTML = `
         <div class="tiktok-media-container">
@@ -1664,7 +1351,7 @@ function show(id){
   }
 }
 
-// AUTH STATE - FIXED VERSION
+// AUTH STATE
 auth.onAuthStateChanged(async user=>{
   if(user){
     document.getElementById('userEmail').textContent = user.email + (user.email === 'exoticslash3r@gmail.com' ? ' (AndreKriegman)' : '');
@@ -1703,7 +1390,7 @@ async function signup(){
     await db.collection('profiles').doc(user.uid).set({
       username: username || email.split('@')[0],
       bio: '',
-      avatar: defaultAvatar,
+      avatar: DEFAULT_AVATAR,
       themeColor: '#ffdd00',
       joinDate: new Date().toLocaleDateString(),
       createdAt: firebase.firestore.FieldValue.serverTimestamp()
@@ -1738,7 +1425,7 @@ function logout(){
   }
 }
 
-// CREATE POST - FIXED to use profile data
+// CREATE POST
 function publish(){
   const user=auth.currentUser;
   if(!user) return alert("Login first");
@@ -1757,9 +1444,8 @@ function publish(){
 
   const r=new FileReader();
   r.onload=()=>{
-    // Use profile data if available, otherwise use defaults
+    // Always use default avatar and current profile username
     const authorUsername = userProfile.username || user.email.split('@')[0];
-    const authorAvatar = userProfile.avatar || defaultAvatar;
     
     db.collection("posts").add({
       title:t,
@@ -1767,7 +1453,7 @@ function publish(){
       type:f.type,
       author:user.email,
       authorUsername: authorUsername,
-      authorAvatar: authorAvatar,
+      authorAvatar: DEFAULT_AVATAR,
       time:firebase.firestore.FieldValue.serverTimestamp()
     }).then(() => {
       document.getElementById('title').value=""; 
