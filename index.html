@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Global Feed with Auth</title>
+<title>ZeroDay Feed</title>
 
 <!-- Firebase -->
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
@@ -21,7 +21,7 @@
 
 body {
   font-family: Arial, sans-serif;
-  background: linear-gradient(135deg, #8b0000 0%, #4a0000 100%);
+  background: linear-gradient(135deg, #1a1a1a 0%, #000000 100%);
   color: #fff;
   min-height: 100vh;
   overflow-x: hidden;
@@ -63,9 +63,9 @@ body {
   position: absolute;
   top: 20px;
   right: 20px;
-  background: rgba(255, 0, 0, 0.7);
-  color: white;
-  border: 2px solid #8b0000;
+  background: rgba(255, 221, 0, 0.7);
+  color: black;
+  border: 2px solid #ffdd00;
   width: 40px;
   height: 40px;
   border-radius: 50%;
@@ -75,280 +75,70 @@ body {
   align-items: center;
   justify-content: center;
   transition: all 0.3s ease;
+  font-weight: bold;
 }
 
 .media-modal-close:hover {
-  background: rgba(255, 0, 0, 0.9);
+  background: rgba(255, 221, 0, 0.9);
   transform: scale(1.1);
+  box-shadow: 0 0 15px rgba(255, 221, 0, 0.8);
 }
 
 .media-modal-download {
   position: absolute;
   top: 20px;
   left: 20px;
-  background: rgba(255, 0, 0, 0.7);
-  color: white;
-  border: 2px solid #8b0000;
+  background: rgba(255, 221, 0, 0.7);
+  color: black;
+  border: 2px solid #ffdd00;
   padding: 10px 20px;
   border-radius: 25px;
   font-size: 14px;
   cursor: pointer;
   transition: all 0.3s ease;
+  font-weight: bold;
 }
 
 .media-modal-download:hover {
-  background: rgba(255, 0, 0, 0.9);
+  background: rgba(255, 221, 0, 0.9);
   transform: scale(1.05);
-}
-
-.media-preview {
-  cursor: pointer;
-  transition: transform 0.3s ease, opacity 0.3s ease;
-  border: 2px solid #8b0000;
-  border-radius: 8px;
-}
-
-.media-preview:hover {
-  transform: scale(1.02);
-  opacity: 0.9;
-  border-color: #ff0000;
+  box-shadow: 0 0 10px rgba(255, 221, 0, 0.7);
 }
 
 /* Scrollbar Styling (Desktop) */
 ::-webkit-scrollbar {
-  width: 12px;
+  width: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  background: rgba(139, 0, 0, 0.2);
+  background: rgba(30, 30, 30, 0.5);
   border-radius: 10px;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: linear-gradient(45deg, #8b0000, #ff0000);
+  background: linear-gradient(45deg, #ffdd00, #ffaa00);
   border-radius: 10px;
-  border: 2px solid #4a0000;
+  border: 1px solid #333;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(45deg, #ff0000, #8b0000);
+  background: linear-gradient(45deg, #ffaa00, #ffdd00);
 }
 
 /* Container */
 .container {
-  max-width: 1200px;
+  max-width: 100%;
   margin: 0 auto;
-  padding: 20px;
+  padding: 0;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
 }
 
-/* THEME STYLES */
-body.normal-theme {
-  background: linear-gradient(135deg, #8b0000 0%, #4a0000 100%);
-  color: #fff;
-}
-
-body.bloody-red-theme {
-  background: linear-gradient(135deg, #8b0000 0%, #4a0000 100%);
-  color: #fff;
-  font-family: "Courier New", "Arial Black", Arial, sans-serif;
-}
-
-.bloody-red-theme .navbar {
-  background: linear-gradient(45deg, #8b0000, #4a0000);
-  border: 3px solid #ff0000;
-  border-radius: 0 0 15px 15px;
-  box-shadow: 0 4px 20px rgba(255, 0, 0, 0.3);
-  position: relative;
-  overflow: hidden;
-}
-
-.bloody-red-theme .navbar::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 3px;
-  background: linear-gradient(90deg, transparent, #ff0000, transparent);
-  animation: bloodFlow 3s infinite;
-}
-
-@keyframes bloodFlow {
-  0% { left: -100%; }
-  100% { left: 100%; }
-}
-
-.bloody-red-theme .navbar button {
-  background: linear-gradient(45deg, #8b0000, #ff0000);
-  color: #fff;
-  border: 2px solid #ff4444;
-  font-weight: bold;
-  text-shadow: 1px 1px 0 #000;
-  position: relative;
-  overflow: hidden;
-}
-
-.bloody-red-theme .navbar button:hover {
-  background: linear-gradient(45deg, #ff0000, #8b0000);
-  transform: scale(1.05);
-  box-shadow: 0 0 15px rgba(255, 0, 0, 0.7);
-}
-
-.bloody-red-theme .page {
-  background: rgba(74, 0, 0, 0.9);
-  border: 3px solid #ff0000;
-  border-radius: 15px;
-  box-shadow: 0 0 25px rgba(255, 0, 0, 0.5);
-  position: relative;
-  overflow: hidden;
-}
-
-.bloody-red-theme .page::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" opacity="0.1"><path d="M0,50 Q25,25 50,50 T100,50" stroke="%23ff0000" fill="none"/></svg>');
-  pointer-events: none;
-}
-
-.bloody-red-theme .post {
-  background: linear-gradient(135deg, rgba(139, 0, 0, 0.8), rgba(74, 0, 0, 0.9));
-  border: 2px solid #ff4444;
-  border-radius: 10px;
-  box-shadow: 0 0 15px rgba(255, 0, 0, 0.3);
-  position: relative;
-  overflow: hidden;
-}
-
-.bloody-red-theme .post::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 3px;
-  background: linear-gradient(90deg, transparent, #ff0000, transparent);
-}
-
-.bloody-red-theme .tag.andre-tag {
-  background: linear-gradient(45deg, #ff0000, #8b0000);
-  color: #fff;
-  font-weight: bold;
-  animation: bloodPulse 2s infinite;
-  border: 2px solid #ff4444;
-  text-shadow: 1px 1px 2px #000;
-}
-
-.bloody-red-theme .tag.regular-tag {
-  background: linear-gradient(45deg, #8b0000, #4a0000);
-  color: #fff;
-  font-weight: bold;
-  border: 2px solid #ff4444;
-}
-
-@keyframes bloodPulse {
-  0%, 100% { 
-    box-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
-    transform: scale(1);
-  }
-  50% { 
-    box-shadow: 0 0 20px rgba(255, 0, 0, 0.8);
-    transform: scale(1.05);
-  }
-}
-
-.bloody-red-theme input, 
-.bloody-red-theme textarea,
-.bloody-red-theme select,
-.bloody-red-theme button:not(.navbar button) {
-  border: 2px solid #ff0000;
-  border-radius: 5px;
-  background: rgba(74, 0, 0, 0.8);
-  color: #fff;
-}
-
-.bloody-red-theme input::placeholder,
-.bloody-red-theme textarea::placeholder {
-  color: #ff9999;
-}
-
-.bloody-red-theme h2 {
-  background: linear-gradient(45deg, #ff0000, #8b0000);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-  position: relative;
-  display: inline-block;
-}
-
-.bloody-red-theme h2::after {
-  content: '';
-  position: absolute;
-  bottom: -5px;
-  left: 0;
-  width: 100%;
-  height: 2px;
-  background: linear-gradient(90deg, transparent, #ff0000, transparent);
-}
-
-/* Normal Theme */
-.normal-theme .navbar {
-  background: linear-gradient(135deg, #8b0000 0%, #4a0000 100%);
-  border-bottom: 2px solid #ff0000;
-}
-
-.normal-theme .navbar button {
-  background: #8b0000;
-  color: white;
-  transition: all 0.3s ease;
-}
-
-.normal-theme .navbar button:hover {
-  background: #ff0000;
-  transform: translateY(-2px);
-}
-
-.normal-theme .page {
-  background: rgba(74, 0, 0, 0.95);
-  border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(255, 0, 0, 0.2);
-  color: #fff;
-}
-
-.normal-theme .post {
-  background: rgba(139, 0, 0, 0.8);
-  border: 1px solid #ff4444;
-  border-radius: 6px;
-  transition: transform 0.2s;
-}
-
-.normal-theme .post:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(255, 0, 0, 0.3);
-}
-
-.normal-theme .tag.andre-tag {
-  background: linear-gradient(45deg, #ff0000, #8b0000);
-  color: white;
-  font-weight: bold;
-}
-
-.normal-theme .tag.regular-tag {
-  background: #8b0000;
-  color: white;
-}
-
-/* Navbar */
+/* NAVBAR WITH CUSTOM BACKGROUND */
 .navbar {
   color: white;
-  padding: 15px 20px;
+  padding: 12px 20px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -357,6 +147,12 @@ body.bloody-red-theme {
   position: sticky;
   top: 0;
   z-index: 1000;
+  background-image: url('https://i.postimg.cc/mDp9RdK6/zeroday.jpg');
+  background-size: cover;
+  background-position: center;
+  border-bottom: 2px solid #ffdd00;
+  box-shadow: 0 4px 20px rgba(255, 221, 0, 0.4);
+  min-height: 70px;
 }
 
 .navbar-left, .navbar-right {
@@ -369,29 +165,196 @@ body.bloody-red-theme {
 .navbar button {
   cursor: pointer;
   padding: 8px 16px;
-  border: none;
+  border: 2px solid #ffdd00;
   border-radius: 4px;
   font-size: 14px;
   font-weight: 600;
   transition: all 0.3s ease;
+  background: rgba(30, 30, 30, 0.85);
+  color: #ffdd00;
+  text-shadow: 0 0 5px rgba(255, 221, 0, 0.5);
 }
 
 .navbar button:hover {
-  opacity: 0.9;
-}
-
-#themeToggle {
-  background: linear-gradient(45deg, #8b0000, #ff0000);
-  color: white;
-  border: 2px solid #ff4444;
+  background: rgba(255, 221, 0, 0.2);
+  transform: translateY(-2px);
+  box-shadow: 0 0 10px rgba(255, 221, 0, 0.7);
 }
 
 #userEmail {
   font-weight: bold;
   padding: 8px 15px;
-  background: rgba(255, 0, 0, 0.3);
+  background: rgba(30, 30, 30, 0.85);
   border-radius: 20px;
-  border: 1px solid #ff4444;
+  border: 2px solid #ffdd00;
+  color: #ffdd00;
+  text-shadow: 0 0 5px rgba(255, 221, 0, 0.5);
+}
+
+/* TIKTOK-STYLE FEED CONTAINER */
+#tiktokFeed {
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 70px);
+  overflow-y: auto;
+  scroll-snap-type: y mandatory;
+  scroll-behavior: smooth;
+  position: relative;
+}
+
+.tiktok-post {
+  flex: 0 0 100%;
+  min-height: 100vh;
+  scroll-snap-align: start;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 20px;
+  background: rgba(20, 20, 20, 0.95);
+  border-bottom: 1px solid rgba(255, 221, 0, 0.3);
+}
+
+.tiktok-media-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #000;
+  z-index: 1;
+}
+
+.tiktok-media-container img,
+.tiktok-media-container video {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.tiktok-video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.tiktok-content {
+  position: relative;
+  z-index: 2;
+  background: linear-gradient(transparent, rgba(0, 0, 0, 0.9));
+  padding: 20px;
+  border-radius: 10px;
+  border: 2px solid #ffdd00;
+  box-shadow: 0 0 20px rgba(255, 221, 0, 0.5);
+  margin-bottom: 80px;
+}
+
+.tiktok-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 15px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(255, 221, 0, 0.5);
+}
+
+.tiktok-user-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.tiktok-avatar {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  border: 2px solid #ffdd00;
+  object-fit: cover;
+  box-shadow: 0 0 10px rgba(255, 221, 0, 0.7);
+}
+
+.tiktok-username {
+  font-weight: bold;
+  color: #ffdd00;
+  font-size: 18px;
+  text-shadow: 0 0 10px rgba(255, 221, 0, 0.7);
+}
+
+.tiktok-time {
+  font-size: 12px;
+  color: #ffdd99;
+}
+
+.tiktok-title {
+  font-size: 20px;
+  font-weight: bold;
+  color: #fff;
+  margin-bottom: 15px;
+  text-shadow: 0 0 5px rgba(255, 221, 0, 0.5);
+}
+
+.tiktok-tag {
+  padding: 6px 15px;
+  font-size: 13px;
+  border-radius: 20px;
+  display: inline-block;
+  background: linear-gradient(45deg, #ffdd00, #ffaa00);
+  color: #000;
+  font-weight: bold;
+  border: 2px solid #ffdd00;
+  box-shadow: 0 0 10px rgba(255, 221, 0, 0.7);
+}
+
+.tiktok-tag.andre-tag {
+  background: linear-gradient(45deg, #ff0000, #ff8800);
+  color: #fff;
+  animation: pulseGlow 2s infinite;
+}
+
+@keyframes pulseGlow {
+  0%, 100% { 
+    box-shadow: 0 0 10px rgba(255, 221, 0, 0.7);
+    transform: scale(1);
+  }
+  50% { 
+    box-shadow: 0 0 20px rgba(255, 221, 0, 0.9);
+    transform: scale(1.05);
+  }
+}
+
+.tiktok-controls {
+  position: absolute;
+  right: 20px;
+  bottom: 100px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  z-index: 3;
+}
+
+.control-btn {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  border: 2px solid #ffdd00;
+  background: rgba(30, 30, 30, 0.8);
+  color: #ffdd00;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 0 10px rgba(255, 221, 0, 0.5);
+}
+
+.control-btn:hover {
+  background: rgba(255, 221, 0, 0.2);
+  transform: scale(1.1);
+  box-shadow: 0 0 15px rgba(255, 221, 0, 0.8);
 }
 
 /* Profile Section */
@@ -401,24 +364,26 @@ body.bloody-red-theme {
   gap: 15px;
   margin-bottom: 20px;
   padding: 15px;
-  background: rgba(139, 0, 0, 0.3);
+  background: rgba(30, 30, 30, 0.9);
   border-radius: 10px;
-  border: 2px solid #ff4444;
+  border: 2px solid #ffdd00;
+  box-shadow: 0 0 15px rgba(255, 221, 0, 0.4);
 }
 
 .profile-avatar {
   width: 80px;
   height: 80px;
   border-radius: 50%;
-  border: 3px solid #ff0000;
+  border: 3px solid #ffdd00;
   object-fit: cover;
   cursor: pointer;
   transition: transform 0.3s ease;
+  box-shadow: 0 0 15px rgba(255, 221, 0, 0.7);
 }
 
 .profile-avatar:hover {
   transform: scale(1.05);
-  box-shadow: 0 0 20px rgba(255, 0, 0, 0.7);
+  box-shadow: 0 0 20px rgba(255, 221, 0, 0.9);
 }
 
 .profile-info {
@@ -428,13 +393,13 @@ body.bloody-red-theme {
 .profile-username {
   font-size: 24px;
   font-weight: bold;
-  color: #fff;
+  color: #ffdd00;
   margin-bottom: 5px;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+  text-shadow: 0 0 10px rgba(255, 221, 0, 0.7);
 }
 
 .profile-bio {
-  color: #ff9999;
+  color: #ffdd99;
   font-size: 14px;
   margin-bottom: 10px;
 }
@@ -443,7 +408,7 @@ body.bloody-red-theme {
   display: flex;
   gap: 20px;
   font-size: 12px;
-  color: #ffcccc;
+  color: #ffdd99;
 }
 
 .stat {
@@ -455,7 +420,7 @@ body.bloody-red-theme {
 .stat-value {
   font-weight: bold;
   font-size: 16px;
-  color: #fff;
+  color: #ffdd00;
 }
 
 /* Profile Customization Modal */
@@ -466,7 +431,7 @@ body.bloody-red-theme {
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.9);
+  background: rgba(0, 0, 0, 0.95);
   z-index: 3000;
   justify-content: center;
   align-items: center;
@@ -477,8 +442,8 @@ body.bloody-red-theme {
 }
 
 .profile-modal-content {
-  background: linear-gradient(135deg, #8b0000 0%, #4a0000 100%);
-  border: 3px solid #ff0000;
+  background: linear-gradient(135deg, #1a1a1a 0%, #000000 100%);
+  border: 3px solid #ffdd00;
   border-radius: 15px;
   padding: 30px;
   width: 90%;
@@ -486,15 +451,16 @@ body.bloody-red-theme {
   max-height: 90vh;
   overflow-y: auto;
   position: relative;
+  box-shadow: 0 0 30px rgba(255, 221, 0, 0.7);
 }
 
 .profile-modal-close {
   position: absolute;
   top: 15px;
   right: 15px;
-  background: rgba(255, 0, 0, 0.7);
-  color: white;
-  border: 2px solid #8b0000;
+  background: rgba(255, 221, 0, 0.7);
+  color: black;
+  border: 2px solid #ffdd00;
   width: 30px;
   height: 30px;
   border-radius: 50%;
@@ -503,56 +469,59 @@ body.bloody-red-theme {
   display: flex;
   align-items: center;
   justify-content: center;
+  font-weight: bold;
 }
 
 .profile-modal-close:hover {
-  background: rgba(255, 0, 0, 0.9);
+  background: rgba(255, 221, 0, 0.9);
+  box-shadow: 0 0 10px rgba(255, 221, 0, 0.8);
 }
 
 .profile-avatar-preview {
   width: 120px;
   height: 120px;
   border-radius: 50%;
-  border: 3px solid #ff0000;
+  border: 3px solid #ffdd00;
   object-fit: cover;
   margin: 0 auto 20px;
   display: block;
+  box-shadow: 0 0 20px rgba(255, 221, 0, 0.5);
 }
 
 .avatar-upload-area {
   text-align: center;
   margin: 15px 0;
   padding: 20px;
-  border: 2px dashed #ff0000;
+  border: 2px dashed #ffdd00;
   border-radius: 10px;
-  background: rgba(74, 0, 0, 0.5);
+  background: rgba(30, 30, 30, 0.5);
   cursor: pointer;
   transition: all 0.3s ease;
 }
 
 .avatar-upload-area:hover {
-  background: rgba(74, 0, 0, 0.7);
-  border-color: #ff4444;
+  background: rgba(30, 30, 30, 0.7);
+  border-color: #ffaa00;
 }
 
 .avatar-upload-area.dragover {
-  background: rgba(255, 0, 0, 0.2);
-  border-color: #ff6666;
+  background: rgba(255, 221, 0, 0.2);
+  border-color: #ffdd00;
 }
 
 .upload-icon {
   font-size: 40px;
-  color: #ff6666;
+  color: #ffdd00;
   margin-bottom: 10px;
 }
 
 .upload-text {
-  color: #ff9999;
+  color: #ffdd99;
   font-size: 14px;
 }
 
 .upload-text strong {
-  color: #ff6666;
+  color: #ffdd00;
 }
 
 /* Avatar Selection */
@@ -575,12 +544,13 @@ body.bloody-red-theme {
 
 .avatar-option:hover {
   transform: scale(1.1);
-  border-color: #ff0000;
+  border-color: #ffdd00;
+  box-shadow: 0 0 10px rgba(255, 221, 0, 0.7);
 }
 
 .avatar-option.selected {
-  border-color: #ff0000;
-  box-shadow: 0 0 15px rgba(255, 0, 0, 0.7);
+  border-color: #ffdd00;
+  box-shadow: 0 0 15px rgba(255, 221, 0, 0.9);
 }
 
 /* Color Picker */
@@ -606,7 +576,7 @@ body.bloody-red-theme {
 
 .color-option.selected {
   border-color: white;
-  box-shadow: 0 0 10px rgba(255, 255, 255, 0.7);
+  box-shadow: 0 0 10px rgba(255, 221, 0, 0.7);
 }
 
 /* Avatar Upload Preview */
@@ -648,7 +618,7 @@ body.bloody-red-theme {
 .upload-progress {
   width: 100%;
   height: 10px;
-  background: rgba(74, 0, 0, 0.5);
+  background: rgba(30, 30, 30, 0.5);
   border-radius: 5px;
   margin: 10px 0;
   overflow: hidden;
@@ -657,7 +627,7 @@ body.bloody-red-theme {
 
 .upload-progress-bar {
   height: 100%;
-  background: linear-gradient(90deg, #8b0000, #ff0000);
+  background: linear-gradient(90deg, #ffdd00, #ffaa00);
   width: 0%;
   transition: width 0.3s ease;
 }
@@ -665,155 +635,80 @@ body.bloody-red-theme {
 /* Pages */
 .page {
   display: none;
-  padding: 25px;
-  margin-top: 20px;
-  min-height: calc(100vh - 100px);
+  padding: 0;
+  margin-top: 0;
+  min-height: calc(100vh - 70px);
 }
 
 #login, #signup {
   max-width: 400px;
   margin: 40px auto;
+  padding: 20px;
 }
 
 /* Form Elements */
-input, textarea, select, button:not(.navbar button) {
+input, textarea, select, button:not(.navbar button, .control-btn) {
   width: 100%;
   padding: 12px;
   margin: 8px 0;
   font-size: 16px;
-  background: rgba(74, 0, 0, 0.8);
-  border: 2px solid #ff0000;
+  background: rgba(30, 30, 30, 0.9);
+  border: 2px solid #ffdd00;
   border-radius: 5px;
-  color: white;
+  color: #fff;
 }
 
-button:not(.navbar button) {
-  background: linear-gradient(45deg, #8b0000, #ff0000);
-  color: white;
+button:not(.navbar button, .control-btn) {
+  background: linear-gradient(45deg, #ffdd00, #ffaa00);
+  color: #000;
   border: none;
   border-radius: 4px;
   cursor: pointer;
   font-weight: 600;
-  transition: background 0.3s ease;
+  transition: all 0.3s ease;
+  font-weight: bold;
 }
 
-button:not(.navbar button):hover {
-  background: linear-gradient(45deg, #ff0000, #8b0000);
+button:not(.navbar button, .control-btn):hover {
+  background: linear-gradient(45deg, #ffaa00, #ffdd00);
   transform: translateY(-2px);
+  box-shadow: 0 0 15px rgba(255, 221, 0, 0.7);
 }
 
 a {
-  color: #ff6666;
+  color: #ffdd00;
   text-decoration: none;
   font-weight: 600;
 }
 
 a:hover {
   text-decoration: underline;
-  color: #ff0000;
+  color: #ffaa00;
 }
 
-/* Posts */
-#posts {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 20px;
+/* CREATE POST PAGE */
+#post {
   padding: 20px;
-  overflow-y: auto;
-  max-height: calc(100vh - 200px);
 }
 
-.post {
-  padding: 15px;
-  position: relative;
-  display: flex;
-  flex-direction: column;
-}
-
-.post-header {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  margin-bottom: 15px;
+#post h2 {
+  color: #ffdd00;
+  text-shadow: 0 0 10px rgba(255, 221, 0, 0.7);
+  margin-bottom: 20px;
+  border-bottom: 2px solid #ffdd00;
   padding-bottom: 10px;
-  border-bottom: 1px solid rgba(255, 0, 0, 0.3);
-}
-
-.post-user-info {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.post-avatar {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  border: 2px solid #ff0000;
-  object-fit: cover;
-}
-
-.post-username {
-  font-weight: bold;
-  color: #fff;
-  font-size: 16px;
-  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
-}
-
-.post-time {
-  font-size: 12px;
-  color: #ff9999;
-}
-
-.post img, .post video {
-  max-width: 100%;
-  height: auto;
-  border-radius: 8px;
-  margin-top: 10px;
-}
-
-.post strong {
-  font-size: 18px;
-  margin-bottom: 5px;
-  display: block;
-  color: #fff;
-}
-
-.tag {
-  padding: 5px 12px;
-  font-size: 12px;
-  border-radius: 15px;
-  display: inline-block;
-  margin-left: 10px;
-}
-
-.post button.delete {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  background: rgba(255, 0, 0, 0.7);
-  color: white;
-  border: 2px solid #8b0000;
-  padding: 5px 10px;
-  cursor: pointer;
-  border-radius: 4px;
-  font-size: 12px;
-  z-index: 10;
-}
-
-.post button.delete:hover {
-  background: rgba(255, 0, 0, 0.9);
 }
 
 /* Responsive Design */
 @media (max-width: 768px) {
   .container {
-    padding: 10px;
+    padding: 0;
   }
   
   .navbar {
     flex-direction: column;
     padding: 10px;
+    min-height: 60px;
   }
   
   .navbar-left, .navbar-right {
@@ -821,35 +716,24 @@ a:hover {
     justify-content: center;
   }
   
-  #posts {
-    grid-template-columns: 1fr;
-    padding: 10px;
-    max-height: none;
-    overflow-y: visible;
+  #tiktokFeed {
+    height: calc(100vh - 60px);
   }
   
-  .page {
-    padding: 15px;
-    margin-top: 10px;
-  }
-  
-  #themeToggle {
-    order: -1;
-    margin-bottom: 10px;
-  }
-  
-  .media-modal-close {
-    top: 10px;
+  .tiktok-controls {
     right: 10px;
-    width: 35px;
-    height: 35px;
+    bottom: 80px;
   }
   
-  .media-modal-download {
-    top: 10px;
-    left: 10px;
-    padding: 8px 16px;
-    font-size: 12px;
+  .control-btn {
+    width: 40px;
+    height: 40px;
+    font-size: 16px;
+  }
+  
+  .tiktok-content {
+    margin-bottom: 60px;
+    padding: 15px;
   }
   
   .profile-section {
@@ -863,10 +747,6 @@ a:hover {
   
   .avatar-options {
     grid-template-columns: repeat(3, 1fr);
-  }
-  
-  .profile-modal-content {
-    padding: 20px;
   }
 }
 
@@ -882,13 +762,9 @@ a:hover {
     margin-bottom: 10px;
   }
   
-  input, button:not(.navbar button) {
+  input, button:not(.navbar button, .control-btn) {
     padding: 10px;
     font-size: 14px;
-  }
-  
-  .post {
-    padding: 10px;
   }
   
   .avatar-options {
@@ -907,9 +783,9 @@ a:hover {
 }
 
 .loading {
-  border: 4px solid rgba(255, 0, 0, 0.3);
+  border: 4px solid rgba(255, 221, 0, 0.3);
   border-radius: 50%;
-  border-top: 4px solid #ff0000;
+  border-top: 4px solid #ffdd00;
   width: 40px;
   height: 40px;
   animation: loading 1s linear infinite;
@@ -937,27 +813,27 @@ a:hover {
 .file-input-label {
   display: block;
   padding: 12px;
-  background: rgba(74, 0, 0, 0.8);
-  border: 2px dashed #ff0000;
+  background: rgba(30, 30, 30, 0.9);
+  border: 2px dashed #ffdd00;
   border-radius: 5px;
   text-align: center;
-  color: #ff9999;
+  color: #ffdd99;
   cursor: pointer;
   transition: all 0.3s ease;
 }
 
 .file-input-label:hover {
-  background: rgba(74, 0, 0, 0.9);
-  border-color: #ff4444;
+  background: rgba(30, 30, 30, 0.95);
+  border-color: #ffaa00;
 }
 
 .file-input-label.dragover {
-  background: rgba(255, 0, 0, 0.2);
-  border-color: #ff6666;
+  background: rgba(255, 221, 0, 0.1);
+  border-color: #ffdd00;
 }
 </style>
 </head>
-<body class="bloody-red-theme">
+<body class="yellow-glow-theme">
 
 <!-- Fullscreen Media Modal -->
 <div id="mediaModal" class="media-modal">
@@ -972,16 +848,11 @@ a:hover {
 <div id="profileModal" class="profile-modal">
   <div class="profile-modal-content">
     <button class="profile-modal-close" onclick="closeProfileModal()">✕</button>
-    <h2>Customize Profile</h2>
+    <h2 style="color: #ffdd00; text-shadow: 0 0 10px rgba(255,221,0,0.7);">Customize Profile</h2>
     
     <div class="profile-form">
-      <!-- Avatar Preview with Upload Overlay -->
-      <div class="avatar-preview-container">
-        <img id="avatarPreview" class="profile-avatar-preview" src="" alt="Avatar Preview">
-        <div class="avatar-preview-overlay" onclick="document.getElementById('avatarUpload').click()">
-          <span>Click to<br>Upload Image</span>
-        </div>
-      </div>
+      <!-- Avatar Preview -->
+      <img id="avatarPreview" class="profile-avatar-preview" src="" alt="Avatar Preview">
       
       <!-- Hidden file input -->
       <input type="file" id="avatarUpload" accept="image/*" style="display: none;" onchange="handleAvatarUpload(event)">
@@ -992,7 +863,7 @@ a:hover {
       </div>
       
       <!-- Upload Area -->
-      <div class="avatar-upload-area" id="avatarUploadArea" onclick="document.getElementById('avatarUpload').click()">
+      <div class="avatar-upload-area" id="avatarUploadArea">
         <div class="upload-icon">📷</div>
         <div class="upload-text">
           <strong>Click to upload</strong> or drag and drop<br>
@@ -1000,30 +871,31 @@ a:hover {
         </div>
       </div>
       
-      <label>Username:</label>
+      <label style="color: #ffdd00; display: block; margin-top: 15px;">Username:</label>
       <input type="text" id="profileUsername" placeholder="Enter username">
       
-      <label>Bio:</label>
+      <label style="color: #ffdd00; display: block; margin-top: 15px;">Bio:</label>
       <textarea id="profileBio" placeholder="Tell us about yourself..." rows="3"></textarea>
       
-      <label>Theme Color:</label>
+      <label style="color: #ffdd00; display: block; margin-top: 15px;">Theme Color:</label>
       <div class="color-picker">
-        <div class="color-option" style="background: #8b0000;" onclick="selectColor('#8b0000')"></div>
-        <div class="color-option" style="background: #ff0000;" onclick="selectColor('#ff0000')"></div>
-        <div class="color-option" style="background: #4a0000;" onclick="selectColor('#4a0000')"></div>
-        <div class="color-option" style="background: #660000;" onclick="selectColor('#660000')"></div>
-        <div class="color-option" style="background: #cc0000;" onclick="selectColor('#cc0000')"></div>
+        <div class="color-option" style="background: #ffdd00;" onclick="selectColor('#ffdd00')"></div>
+        <div class="color-option" style="background: #ffaa00;" onclick="selectColor('#ffaa00')"></div>
+        <div class="color-option" style="background: #ff8800;" onclick="selectColor('#ff8800')"></div>
+        <div class="color-option" style="background: #ffff00;" onclick="selectColor('#ffff00')"></div>
+        <div class="color-option" style="background: #ffcc00;" onclick="selectColor('#ffcc00')"></div>
       </div>
       
-      <label>Or choose from default avatars:</label>
+      <label style="color: #ffdd00; display: block; margin-top: 15px;">Choose default avatar:</label>
       <div class="avatar-options" id="avatarOptions">
         <!-- Avatars will be populated by JavaScript -->
       </div>
       
-      <label>Custom Avatar URL (optional):</label>
+      <label style="color: #ffdd00; display: block; margin-top: 15px;">Custom Avatar URL (optional):</label>
       <input type="text" id="customAvatarUrl" placeholder="Or paste image URL here">
       
       <button onclick="saveProfile()" style="margin-top: 20px;" id="saveProfileBtn">Save Profile</button>
+      <p id="profileMessage" style="text-align: center; margin-top: 10px; color: #ffdd00;"></p>
     </div>
   </div>
 </div>
@@ -1035,7 +907,6 @@ a:hover {
       <button id="logoutBtn" onclick="logout()">Logout</button>
     </div>
     <div class="navbar-right">
-      <button id="themeToggle" onclick="toggleTheme()">Switch to Normal Theme</button>
       <button onclick="show('home')">Home</button>
       <button onclick="show('post')">Post</button>
       <button onclick="show('profile')" id="profileBtn" style="display: none;">My Profile</button>
@@ -1043,14 +914,14 @@ a:hover {
   </div>
 
   <!-- PROFILE PAGE -->
-  <div id="profile" class="page">
+  <div id="profile" class="page" style="padding: 20px;">
     <div id="profileDisplay"></div>
-    <button onclick="openProfileModal()" style="width: auto; align-self: flex-start;">Edit Profile</button>
+    <button onclick="openProfileModal()" style="width: auto; align-self: flex-start; margin-top: 20px;">Edit Profile</button>
   </div>
 
   <!-- LOGIN PAGE -->
   <div id="login" class="page">
-    <h2>Login</h2>
+    <h2 style="color: #ffdd00; text-shadow: 0 0 10px rgba(255,221,0,0.7);">Login</h2>
     <input type="email" id="loginEmail" placeholder="Email">
     <input type="password" id="loginPass" placeholder="Password">
     <button onclick="login()">Login</button>
@@ -1059,7 +930,7 @@ a:hover {
 
   <!-- SIGNUP PAGE -->
   <div id="signup" class="page">
-    <h2>Sign Up</h2>
+    <h2 style="color: #ffdd00; text-shadow: 0 0 10px rgba(255,221,0,0.7);">Sign Up</h2>
     <input type="email" id="signupEmail" placeholder="Email">
     <input type="password" id="signupPass" placeholder="Password">
     <input type="text" id="signupUsername" placeholder="Username (optional)">
@@ -1067,10 +938,10 @@ a:hover {
     <p>Already have account? <a href="#" onclick="show('login')">Login</a></p>
   </div>
 
-  <!-- HOME FEED -->
-  <div id="home" class="page">
-    <h2>Global Feed</h2>
-    <div id="posts">
+  <!-- TIKTOK-STYLE HOME FEED -->
+  <div id="home" class="page" style="padding: 0; overflow: hidden;">
+    <div id="tiktokFeed">
+      <!-- Posts will be loaded here -->
       <div class="loading"></div>
     </div>
   </div>
@@ -1100,63 +971,44 @@ const auth = firebase.auth();
 const db = firebase.firestore();
 const storage = firebase.storage();
 
-// Variables for media modal
+// Global variables
 let currentMediaUrl = '';
 let currentMediaType = '';
+let currentVideoIndex = 0;
+let uploadedAvatarFile = null;
+let selectedAvatar = '';
+let selectedColor = '#ffdd00';
 
 // User profile data
 let userProfile = {
   username: '',
   bio: '',
   avatar: '',
-  themeColor: '#8b0000',
+  themeColor: '#ffdd00',
   postCount: 0,
   joinDate: ''
 };
 
-// Default avatars
+// Default avatars with yellow theme
 const defaultAvatars = [
-  'https://api.dicebear.com/7.x/avataaars/svg?seed=blood1&backgroundColor=b6e3f4',
-  'https://api.dicebear.com/7.x/avataaars/svg?seed=blood2&backgroundColor=b6e3f4',
-  'https://api.dicebear.com/7.x/avataaars/svg?seed=blood3&backgroundColor=b6e3f4',
-  'https://api.dicebear.com/7.x/avataaars/svg?seed=blood4&backgroundColor=b6e3f4',
-  'https://api.dicebear.com/7.x/avataaars/svg?seed=blood5&backgroundColor=b6e3f4',
-  'https://api.dicebear.com/7.x/avataaars/svg?seed=blood6&backgroundColor=b6e3f4'
+  'https://api.dicebear.com/7.x/avataaars/svg?seed=zero1&backgroundColor=ffdd00',
+  'https://api.dicebear.com/7.x/avataaars/svg?seed=zero2&backgroundColor=ffaa00',
+  'https://api.dicebear.com/7.x/avataaars/svg?seed=zero3&backgroundColor=ff8800',
+  'https://api.dicebear.com/7.x/avataaars/svg?seed=zero4&backgroundColor=ffcc00',
+  'https://api.dicebear.com/7.x/avataaars/svg?seed=zero5&backgroundColor=ffff00',
+  'https://api.dicebear.com/7.x/avataaars/svg?seed=zero6&backgroundColor=ffdd00'
 ];
 
-// Uploaded avatar file
-let uploadedAvatarFile = null;
-let uploadedAvatarUrl = '';
-
-// THEME MANAGEMENT
-let isBloodyRedTheme = true;
-
-function toggleTheme() {
-  const body = document.body;
-  const toggleBtn = document.getElementById('themeToggle');
-  
-  if (isBloodyRedTheme) {
-    body.classList.remove('bloody-red-theme');
-    body.classList.add('normal-theme');
-    toggleBtn.textContent = 'Switch to Bloody Red Theme';
-  } else {
-    body.classList.remove('normal-theme');
-    body.classList.add('bloody-red-theme');
-    toggleBtn.textContent = 'Switch to Normal Theme';
-  }
-  
-  isBloodyRedTheme = !isBloodyRedTheme;
-  localStorage.setItem('theme', isBloodyRedTheme ? 'bloody-red' : 'normal');
-}
-
-// Load saved theme
-window.addEventListener('DOMContentLoaded', () => {
-  const savedTheme = localStorage.getItem('theme');
-  if (savedTheme === 'normal') {
-    toggleTheme(); // Switch to normal theme
-  }
+// Initialize on page load
+document.addEventListener('DOMContentLoaded', () => {
   loadAvatarOptions();
   setupDragAndDrop();
+  show('login');
+  
+  // Initialize file upload area click
+  document.getElementById('avatarUploadArea').addEventListener('click', function() {
+    document.getElementById('avatarUpload').click();
+  });
 });
 
 // Load avatar options
@@ -1178,13 +1030,10 @@ function loadAvatarOptions() {
 function setupDragAndDrop() {
   const uploadArea = document.getElementById('avatarUploadArea');
   
-  // Prevent default drag behaviors
   ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
     uploadArea.addEventListener(eventName, preventDefaults, false);
-    document.body.addEventListener(eventName, preventDefaults, false);
   });
   
-  // Highlight drop area when item is dragged over it
   ['dragenter', 'dragover'].forEach(eventName => {
     uploadArea.addEventListener(eventName, highlight, false);
   });
@@ -1193,13 +1042,7 @@ function setupDragAndDrop() {
     uploadArea.addEventListener(eventName, unhighlight, false);
   });
   
-  // Handle dropped files
   uploadArea.addEventListener('drop', handleDrop, false);
-  
-  // File input for the upload area
-  uploadArea.addEventListener('click', () => {
-    document.getElementById('avatarUpload').click();
-  });
 }
 
 function preventDefaults(e) {
@@ -1229,13 +1072,11 @@ function handleAvatarUpload(event) {
   const file = event.target.files[0];
   if (!file) return;
   
-  // Validate file type
   if (!file.type.startsWith('image/')) {
     alert('Please upload an image file (PNG, JPG, GIF)');
     return;
   }
   
-  // Validate file size (5MB limit)
   if (file.size > 5 * 1024 * 1024) {
     alert('File size too large. Maximum size is 5MB.');
     return;
@@ -1243,7 +1084,6 @@ function handleAvatarUpload(event) {
   
   uploadedAvatarFile = file;
   
-  // Show preview
   const reader = new FileReader();
   reader.onload = function(e) {
     const preview = document.getElementById('avatarPreview');
@@ -1267,17 +1107,19 @@ async function uploadAvatarToStorage(userId) {
   const uploadProgress = document.getElementById('uploadProgress');
   const progressBar = document.getElementById('uploadProgressBar');
   const saveBtn = document.getElementById('saveProfileBtn');
+  const message = document.getElementById('profileMessage');
   
   // Show progress bar
   uploadProgress.style.display = 'block';
   progressBar.style.width = '0%';
   saveBtn.disabled = true;
   saveBtn.textContent = 'Uploading...';
+  message.textContent = 'Uploading avatar...';
   
   try {
     // Create a unique filename
     const timestamp = Date.now();
-    const fileExt = uploadedAvatarFile.name.split('.').pop();
+    const fileExt = uploadedAvatarFile.name.split('.').pop() || 'jpg';
     const filename = `avatars/${userId}_${timestamp}.${fileExt}`;
     
     // Upload to Firebase Storage
@@ -1288,25 +1130,23 @@ async function uploadAvatarToStorage(userId) {
     return new Promise((resolve, reject) => {
       uploadTask.on('state_changed',
         (snapshot) => {
-          // Update progress bar
           const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
           progressBar.style.width = `${progress}%`;
         },
         (error) => {
-          // Hide progress bar on error
           uploadProgress.style.display = 'none';
           saveBtn.disabled = false;
           saveBtn.textContent = 'Save Profile';
+          message.textContent = 'Upload failed: ' + error.message;
           reject(error);
         },
         async () => {
-          // Upload complete, get download URL
           const downloadURL = await uploadTask.snapshot.ref.getDownloadURL();
           
-          // Hide progress bar
           uploadProgress.style.display = 'none';
           saveBtn.disabled = false;
           saveBtn.textContent = 'Save Profile';
+          message.textContent = 'Upload complete!';
           
           resolve(downloadURL);
         }
@@ -1314,7 +1154,7 @@ async function uploadAvatarToStorage(userId) {
     });
   } catch (error) {
     console.error('Upload error:', error);
-    alert('Failed to upload avatar. Please try again.');
+    message.textContent = 'Failed to upload avatar. Please try again.';
     return null;
   }
 }
@@ -1337,100 +1177,42 @@ function selectDefaultAvatar(avatarUrl, index) {
   document.getElementById('customAvatarUrl').value = '';
 }
 
-// MEDIA MODAL FUNCTIONS
-function openMediaModal(mediaUrl, mediaType) {
-  currentMediaUrl = mediaUrl;
-  currentMediaType = mediaType;
-  
-  const modal = document.getElementById('mediaModal');
-  const container = document.getElementById('modalMediaContainer');
-  
-  container.innerHTML = '';
-  
-  if (mediaType.startsWith('image')) {
-    const img = document.createElement('img');
-    img.src = mediaUrl;
-    img.alt = 'Full preview';
-    img.style.maxWidth = '100%';
-    img.style.maxHeight = '95vh';
-    img.style.objectFit = 'contain';
-    container.appendChild(img);
-  } else if (mediaType.startsWith('video')) {
-    const video = document.createElement('video');
-    video.src = mediaUrl;
-    video.controls = true;
-    video.autoplay = true;
-    video.style.maxWidth = '100%';
-    video.style.maxHeight = '95vh';
-    video.style.objectFit = 'contain';
-    container.appendChild(video);
-  }
-  
-  modal.classList.add('active');
-  document.body.style.overflow = 'hidden';
-}
-
-function closeMediaModal() {
-  const modal = document.getElementById('mediaModal');
-  modal.classList.remove('active');
-  document.body.style.overflow = '';
-  
-  const video = modal.querySelector('video');
-  if (video) {
-    video.pause();
-    video.currentTime = 0;
-  }
-}
-
-function downloadMedia() {
-  if (!currentMediaUrl) return;
-  
-  const link = document.createElement('a');
-  link.href = currentMediaUrl;
-  
-  const timestamp = new Date().getTime();
-  if (currentMediaType.startsWith('image')) {
-    link.download = `image_${timestamp}.jpg`;
-  } else if (currentMediaType.startsWith('video')) {
-    link.download = `video_${timestamp}.mp4`;
-  }
-  
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
-}
-
 // PROFILE MODAL FUNCTIONS
-let selectedAvatar = '';
-let selectedColor = '#8b0000';
-
 function openProfileModal() {
   const modal = document.getElementById('profileModal');
   const user = auth.currentUser;
   
-  if (!user) return;
+  if (!user) {
+    alert('Please login to edit your profile');
+    return;
+  }
   
   // Reset upload state
   uploadedAvatarFile = null;
   const uploadProgress = document.getElementById('uploadProgress');
   uploadProgress.style.display = 'none';
   
+  const message = document.getElementById('profileMessage');
+  message.textContent = '';
+  
   // Load current profile data
   loadUserProfile(user.uid).then(profile => {
     document.getElementById('profileUsername').value = profile.username || user.email.split('@')[0];
     document.getElementById('profileBio').value = profile.bio || '';
     document.getElementById('customAvatarUrl').value = '';
-    document.getElementById('avatarPreview').src = profile.avatar || defaultAvatars[0];
     
-    // Set selected avatar
-    selectedAvatar = profile.avatar || defaultAvatars[0];
-    selectedColor = profile.themeColor || '#8b0000';
+    // Set avatar preview
+    const avatarUrl = profile.avatar || defaultAvatars[0];
+    document.getElementById('avatarPreview').src = avatarUrl;
+    
+    // Set selected avatar and color
+    selectedAvatar = avatarUrl;
+    selectedColor = profile.themeColor || '#ffdd00';
     
     // Update color picker
     document.querySelectorAll('.color-option').forEach(option => {
       option.classList.remove('selected');
-      if (option.style.backgroundColor === selectedColor || 
-          option.style.backgroundColor === rgbToHex(selectedColor)) {
+      if (option.style.backgroundColor === selectedColor) {
         option.classList.add('selected');
       }
     });
@@ -1447,6 +1229,8 @@ function openProfileModal() {
     const saveBtn = document.getElementById('saveProfileBtn');
     saveBtn.disabled = false;
     saveBtn.textContent = 'Save Profile';
+  }).catch(error => {
+    message.textContent = 'Error loading profile: ' + error.message;
   });
   
   modal.classList.add('active');
@@ -1465,101 +1249,172 @@ function selectColor(color) {
   // Update selection
   document.querySelectorAll('.color-option').forEach(option => {
     option.classList.remove('selected');
-    if (option.style.backgroundColor === color || 
-        option.style.backgroundColor === rgbToHex(color)) {
+    if (option.style.backgroundColor === color) {
       option.classList.add('selected');
     }
   });
 }
 
-function rgbToHex(rgb) {
-  if (rgb.startsWith('#')) return rgb;
-  
-  const rgbMatch = rgb.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/);
-  if (rgbMatch) {
-    return "#" + ((1 << 24) + (parseInt(rgbMatch[1]) << 16) + (parseInt(rgbMatch[2]) << 8) + parseInt(rgbMatch[3])).toString(16).slice(1);
-  }
-  return rgb;
-}
-
+// Save profile function - FIXED VERSION
 async function saveProfile() {
   const user = auth.currentUser;
-  if (!user) return;
+  if (!user) {
+    alert('Please login to save your profile');
+    return;
+  }
   
   const username = document.getElementById('profileUsername').value.trim();
   const bio = document.getElementById('profileBio').value.trim();
   const customAvatarUrl = document.getElementById('customAvatarUrl').value.trim();
   
-  let avatarUrl = '';
+  const saveBtn = document.getElementById('saveProfileBtn');
+  const message = document.getElementById('profileMessage');
   
-  // Determine which avatar to use (priority: uploaded file > custom URL > selected default > current)
-  if (uploadedAvatarFile) {
-    // Upload new avatar to Firebase Storage
-    avatarUrl = await uploadAvatarToStorage(user.uid);
-    if (!avatarUrl) {
-      alert('Failed to upload avatar. Please try again.');
-      return;
+  saveBtn.disabled = true;
+  saveBtn.textContent = 'Saving...';
+  message.textContent = 'Saving profile...';
+  
+  try {
+    let avatarUrl = userProfile.avatar || defaultAvatars[0];
+    
+    // Determine which avatar to use (priority: uploaded file > custom URL > selected default > current)
+    if (uploadedAvatarFile) {
+      // Upload new avatar to Firebase Storage
+      message.textContent = 'Uploading avatar...';
+      avatarUrl = await uploadAvatarToStorage(user.uid);
+      if (!avatarUrl) {
+        message.textContent = 'Failed to upload avatar';
+        saveBtn.disabled = false;
+        saveBtn.textContent = 'Save Profile';
+        return;
+      }
+    } else if (customAvatarUrl) {
+      // Use custom URL
+      avatarUrl = customAvatarUrl;
+    } else if (selectedAvatar) {
+      // Use selected default avatar
+      avatarUrl = selectedAvatar;
     }
-  } else if (customAvatarUrl) {
-    // Use custom URL
-    avatarUrl = customAvatarUrl;
-  } else if (selectedAvatar) {
-    // Use selected default avatar
-    avatarUrl = selectedAvatar;
-  } else {
-    // Keep current avatar
-    avatarUrl = userProfile.avatar;
+    
+    // Update user profile in Firestore
+    const profileData = {
+      username: username || user.email.split('@')[0],
+      bio: bio,
+      avatar: avatarUrl,
+      themeColor: selectedColor,
+      updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+    };
+    
+    await db.collection('profiles').doc(user.uid).set(profileData, { merge: true });
+    
+    // Update local profile
+    userProfile.username = profileData.username;
+    userProfile.bio = profileData.bio;
+    userProfile.avatar = profileData.avatar;
+    userProfile.themeColor = profileData.themeColor;
+    
+    // Update UI
+    updateProfileDisplay();
+    
+    // Update posts with new username and avatar
+    updateUserPosts(profileData.username, profileData.avatar);
+    
+    message.textContent = 'Profile saved successfully!';
+    message.style.color = '#00ff00';
+    
+    // Close modal after success
+    setTimeout(() => {
+      closeProfileModal();
+    }, 1500);
+    
+  } catch (error) {
+    console.error('Error saving profile:', error);
+    message.textContent = 'Error saving profile: ' + error.message;
+    message.style.color = '#ff0000';
+  } finally {
+    saveBtn.disabled = false;
+    saveBtn.textContent = 'Save Profile';
   }
-  
-  // Update user profile in Firestore
-  await db.collection('profiles').doc(user.uid).set({
-    username: username || user.email.split('@')[0],
-    bio: bio,
-    avatar: avatarUrl,
-    themeColor: selectedColor,
-    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-  }, { merge: true });
-  
-  // Update local profile
-  userProfile.username = username;
-  userProfile.bio = bio;
-  userProfile.avatar = avatarUrl;
-  userProfile.themeColor = selectedColor;
-  
-  // Update UI
-  updateProfileDisplay();
-  
-  closeProfileModal();
-  alert('Profile saved successfully!');
-  
-  // Reset upload state
-  uploadedAvatarFile = null;
 }
 
-// Load user profile from Firestore
-async function loadUserProfile(uid) {
-  const doc = await db.collection('profiles').doc(uid).get();
-  if (doc.exists) {
-    userProfile = { ...userProfile, ...doc.data() };
-  } else {
-    // Create default profile
+// Update all user's posts with new profile info
+async function updateUserPosts(username, avatar) {
+  try {
     const user = auth.currentUser;
-    userProfile.username = user.email.split('@')[0];
-    userProfile.avatar = defaultAvatars[Math.floor(Math.random() * defaultAvatars.length)];
-    userProfile.themeColor = '#8b0000';
-    userProfile.joinDate = new Date().toLocaleDateString();
+    if (!user) return;
     
-    // Save to Firestore
-    await db.collection('profiles').doc(uid).set(userProfile);
+    const postsQuery = await db.collection('posts')
+      .where('author', '==', user.email)
+      .get();
+    
+    const batch = db.batch();
+    
+    postsQuery.forEach(doc => {
+      const postRef = db.collection('posts').doc(doc.id);
+      batch.update(postRef, {
+        authorUsername: username,
+        authorAvatar: avatar
+      });
+    });
+    
+    if (postsQuery.size > 0) {
+      await batch.commit();
+      console.log(`Updated ${postsQuery.size} posts with new profile info`);
+    }
+  } catch (error) {
+    console.error('Error updating posts:', error);
   }
-  
-  // Load post count
-  const posts = await db.collection('posts')
-    .where('author', '==', user.email)
-    .get();
-  userProfile.postCount = posts.size;
-  
-  return userProfile;
+}
+
+// Load user profile from Firestore - FIXED VERSION
+async function loadUserProfile(uid) {
+  try {
+    const doc = await db.collection('profiles').doc(uid).get();
+    
+    if (doc.exists) {
+      userProfile = { ...userProfile, ...doc.data() };
+      
+      // Ensure required fields exist
+      if (!userProfile.username) {
+        const user = auth.currentUser;
+        userProfile.username = user.email.split('@')[0];
+      }
+      if (!userProfile.avatar) {
+        userProfile.avatar = defaultAvatars[0];
+      }
+      if (!userProfile.themeColor) {
+        userProfile.themeColor = '#ffdd00';
+      }
+    } else {
+      // Create default profile
+      const user = auth.currentUser;
+      userProfile = {
+        username: user.email.split('@')[0],
+        bio: '',
+        avatar: defaultAvatars[Math.floor(Math.random() * defaultAvatars.length)],
+        themeColor: '#ffdd00',
+        joinDate: new Date().toLocaleDateString(),
+        postCount: 0
+      };
+      
+      // Save to Firestore
+      await db.collection('profiles').doc(uid).set({
+        ...userProfile,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+      });
+    }
+    
+    // Load post count
+    const posts = await db.collection('posts')
+      .where('author', '==', auth.currentUser.email)
+      .get();
+    userProfile.postCount = posts.size;
+    
+    return userProfile;
+  } catch (error) {
+    console.error('Error loading profile:', error);
+    return userProfile;
+  }
 }
 
 // Update profile display
@@ -1569,25 +1424,244 @@ function updateProfileDisplay() {
   
   const profileDisplay = document.getElementById('profileDisplay');
   
+  // Ensure we have valid data
+  const displayUsername = userProfile.username || user.email.split('@')[0];
+  const displayAvatar = userProfile.avatar || defaultAvatars[0];
+  const displayBio = userProfile.bio || 'No bio yet. Click Edit Profile to add one!';
+  const displayPostCount = userProfile.postCount || 0;
+  const displayJoinDate = userProfile.joinDate || new Date().toLocaleDateString();
+  
   profileDisplay.innerHTML = `
     <div class="profile-section">
-      <img src="${userProfile.avatar}" alt="Avatar" class="profile-avatar" onclick="openProfileModal()">
+      <img src="${displayAvatar}" alt="Avatar" class="profile-avatar" onclick="openProfileModal()">
       <div class="profile-info">
-        <div class="profile-username">${userProfile.username}</div>
-        <div class="profile-bio">${userProfile.bio || 'No bio yet.'}</div>
+        <div class="profile-username">${displayUsername}</div>
+        <div class="profile-email" style="color: #ffaa00; font-size: 12px; margin-bottom: 10px;">${user.email}</div>
+        <div class="profile-bio">${displayBio}</div>
         <div class="profile-stats">
           <div class="stat">
-            <span class="stat-value">${userProfile.postCount || 0}</span>
+            <span class="stat-value">${displayPostCount}</span>
             <span>Posts</span>
           </div>
           <div class="stat">
-            <span class="stat-value">${userProfile.joinDate || new Date().toLocaleDateString()}</span>
+            <span class="stat-value">${displayJoinDate}</span>
             <span>Joined</span>
+          </div>
+          <div class="stat">
+            <span class="stat-value" id="followingCount">0</span>
+            <span>Following</span>
           </div>
         </div>
       </div>
     </div>
   `;
+}
+
+// MEDIA MODAL FUNCTIONS
+function openMediaModal(mediaUrl, mediaType) {
+  currentMediaUrl = mediaUrl;
+  currentMediaType = mediaType;
+  
+  const modal = document.getElementById('mediaModal');
+  const container = document.getElementById('modalMediaContainer');
+  
+  container.innerHTML = '';
+  
+  if (mediaType.startsWith('image')) {
+    const img = document.createElement('img');
+    img.src = mediaUrl;
+    img.alt = 'Full preview';
+    container.appendChild(img);
+  } else if (mediaType.startsWith('video')) {
+    const video = document.createElement('video');
+    video.src = mediaUrl;
+    video.controls = true;
+    video.autoplay = true;
+    container.appendChild(video);
+  }
+  
+  modal.classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeMediaModal() {
+  const modal = document.getElementById('mediaModal');
+  modal.classList.remove('active');
+  document.body.style.overflow = '';
+  
+  const video = modal.querySelector('video');
+  if (video) {
+    video.pause();
+  }
+}
+
+function downloadMedia() {
+  if (!currentMediaUrl) return;
+  
+  const link = document.createElement('a');
+  link.href = currentMediaUrl;
+  link.download = `media_${new Date().getTime()}`;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+}
+
+// TIKTOK FEED FUNCTIONS
+function setupTikTokScroll() {
+  const feed = document.getElementById('tiktokFeed');
+  
+  feed.addEventListener('scroll', handleScroll);
+  setTimeout(handleScroll, 1000);
+}
+
+function handleScroll() {
+  const feed = document.getElementById('tiktokFeed');
+  const posts = feed.querySelectorAll('.tiktok-post');
+  
+  let mostVisiblePost = null;
+  let maxVisibility = 0;
+  
+  posts.forEach((post, index) => {
+    const rect = post.getBoundingClientRect();
+    const visibleHeight = Math.min(rect.bottom, window.innerHeight) - Math.max(rect.top, 0);
+    const visibilityRatio = visibleHeight / Math.min(rect.height, window.innerHeight);
+    
+    if (visibilityRatio > maxVisibility) {
+      maxVisibility = visibilityRatio;
+      mostVisiblePost = { element: post, index };
+    }
+  });
+  
+  if (mostVisiblePost && mostVisiblePost.index !== currentVideoIndex) {
+    const video = mostVisiblePost.element.querySelector('video');
+    if (video) {
+      const currentVideo = feed.querySelectorAll('video')[currentVideoIndex];
+      if (currentVideo) {
+        currentVideo.pause();
+      }
+      
+      video.play().catch(e => console.log('Autoplay prevented:', e));
+      currentVideoIndex = mostVisiblePost.index;
+    }
+  }
+}
+
+// Load TikTok-style posts
+async function loadTikTokPosts() {
+  const feedContainer = document.getElementById('tiktokFeed');
+  feedContainer.innerHTML = '<div class="loading"></div>';
+  
+  db.collection("posts").orderBy("time","desc").onSnapshot(async s=>{
+    if(s.empty){
+      feedContainer.innerHTML='<div class="tiktok-post" style="display: flex; align-items: center; justify-content: center; color: #ffdd99; font-size: 18px;">No posts yet. Be the first to post!</div>';
+      return;
+    }
+    
+    feedContainer.innerHTML="";
+    
+    const posts = [];
+    s.forEach(d => posts.push({ id: d.id, data: d.data() }));
+    
+    posts.forEach((postData, index) => {
+      const p = postData.data;
+      const postDiv = document.createElement("div");
+      postDiv.className = 'tiktok-post';
+      
+      const time = p.time ? new Date(p.time.seconds * 1000).toLocaleString() : 'Just now';
+      const isAndre = p.author === 'exoticslash3r@gmail.com';
+      const tagClass = isAndre ? 'tiktok-tag andre-tag' : 'tiktok-tag';
+      const tagText = isAndre ? 'AndreKriegman' : (p.authorUsername || p.author.split('@')[0]);
+      const avatar = p.authorAvatar || defaultAvatars[0];
+      
+      postDiv.innerHTML = `
+        <div class="tiktok-media-container">
+          ${p.type.startsWith("image") ? 
+            `<img src="${p.media}" alt="${p.title}" class="tiktok-media">` : 
+            `<video src="${p.media}" class="tiktok-video" loop muted playsinline></video>`
+          }
+        </div>
+        
+        <div class="tiktok-content">
+          <div class="tiktok-header">
+            <div class="tiktok-user-info">
+              <img src="${avatar}" alt="Avatar" class="tiktok-avatar">
+              <div>
+                <div class="tiktok-username">${p.authorUsername || p.author.split('@')[0]}</div>
+                <div class="tiktok-time">${time}</div>
+              </div>
+            </div>
+            <span class="${tagClass}">${tagText}</span>
+          </div>
+          <div class="tiktok-title">${p.title}</div>
+        </div>
+        
+        <div class="tiktok-controls">
+          <button class="control-btn" onclick="likePost('${postData.id}')">❤️</button>
+          <button class="control-btn" onclick="openMediaModal('${p.media}', '${p.type}')">🔍</button>
+          <button class="control-btn" onclick="sharePost('${postData.id}')">↗️</button>
+        </div>
+      `;
+      
+      const currentUser = auth.currentUser;
+      if (currentUser && (currentUser.email === p.author || currentUser.email === 'exoticslash3r@gmail.com')) {
+        const del = document.createElement('button');
+        del.textContent = 'Delete';
+        del.className = 'delete';
+        del.style.position = 'absolute';
+        del.style.top = '20px';
+        del.style.right = '20px';
+        del.style.zIndex = '10';
+        del.onclick = (e) => {
+          e.stopPropagation();
+          if (confirm('Delete this post?')) {
+            db.collection('posts').doc(postData.id).delete();
+          }
+        };
+        postDiv.appendChild(del);
+      }
+      
+      feedContainer.appendChild(postDiv);
+    });
+    
+    setTimeout(() => {
+      setupTikTokScroll();
+      const firstVideo = feedContainer.querySelector('video');
+      if (firstVideo) {
+        firstVideo.play().catch(e => console.log('Autoplay prevented:', e));
+      }
+    }, 500);
+  }, error => {
+    feedContainer.innerHTML='<div class="tiktok-post" style="display: flex; align-items: center; justify-content: center; color: #ff6666; font-size: 18px;">Error loading posts. Please try again.</div>';
+    console.error('Error loading posts:', error);
+  });
+}
+
+// Post interaction functions
+function likePost(postId) {
+  const user = auth.currentUser;
+  if (!user) {
+    alert('Please login to like posts');
+    return;
+  }
+  
+  db.collection('likes').add({
+    postId: postId,
+    userId: user.uid,
+    timestamp: firebase.firestore.FieldValue.serverTimestamp()
+  }).then(() => {
+    console.log('Post liked');
+  }).catch(error => {
+    console.error('Error liking post:', error);
+  });
+}
+
+function sharePost(postId) {
+  const postUrl = `${window.location.origin}?post=${postId}`;
+  navigator.clipboard.writeText(postUrl).then(() => {
+    alert('Post link copied to clipboard!');
+  }).catch(err => {
+    prompt('Copy this link:', postUrl);
+  });
 }
 
 // SHOW PAGE FUNCTION
@@ -1596,13 +1670,13 @@ function show(id){
   document.getElementById(id).style.display='block';
   
   if (id === 'home') {
-    loadPosts();
+    loadTikTokPosts();
   } else if (id === 'profile') {
     updateProfileDisplay();
   }
 }
 
-// AUTH STATE
+// AUTH STATE - FIXED VERSION
 auth.onAuthStateChanged(async user=>{
   if(user){
     document.getElementById('userEmail').textContent = user.email + (user.email === 'exoticslash3r@gmail.com' ? ' (AndreKriegman)' : '');
@@ -1613,7 +1687,7 @@ auth.onAuthStateChanged(async user=>{
     await loadUserProfile(user.uid);
     
     show('home');
-    loadPosts();
+    loadTikTokPosts();
   } else {
     document.getElementById('userEmail').textContent='Not signed in';
     document.getElementById('logoutBtn').style.display='none';
@@ -1628,6 +1702,11 @@ async function signup(){
   const pass = document.getElementById('signupPass').value;
   const username = document.getElementById('signupUsername').value.trim();
   
+  if (!email || !pass) {
+    alert('Email and password are required');
+    return;
+  }
+  
   try {
     const userCredential = await auth.createUserWithEmailAndPassword(email, pass);
     const user = userCredential.user;
@@ -1637,25 +1716,32 @@ async function signup(){
       username: username || email.split('@')[0],
       bio: '',
       avatar: defaultAvatars[Math.floor(Math.random() * defaultAvatars.length)],
-      themeColor: '#8b0000',
+      themeColor: '#ffdd00',
       joinDate: new Date().toLocaleDateString(),
       createdAt: firebase.firestore.FieldValue.serverTimestamp()
     });
     
     alert('Account created successfully!');
+    show('home');
   } catch(e) {
-    alert(e.message);
+    alert('Error: ' + e.message);
   }
 }
 
 function login(){
   const email=document.getElementById('loginEmail').value;
   const pass=document.getElementById('loginPass').value;
+  
+  if (!email || !pass) {
+    alert('Email and password are required');
+    return;
+  }
+  
   auth.signInWithEmailAndPassword(email,pass)
   .then(() => {
     alert('Logged in successfully!');
   })
-  .catch(e=>alert(e.message));
+  .catch(e=>alert('Error: ' + e.message));
 }
 
 function logout(){ 
@@ -1664,16 +1750,18 @@ function logout(){
   }
 }
 
-// CREATE POST
+// CREATE POST - FIXED to use profile data
 function publish(){
   const user=auth.currentUser;
   if(!user) return alert("Login first");
+  
   const t=document.getElementById('title').value.trim();
   const f=document.getElementById('file').files[0];
-  if(!t||!f) return alert("Missing data");
-  if(!f.type.startsWith("image/")&&!f.type.startsWith("video/")) return alert("Media only");
+  
+  if(!t) return alert("Title is required");
+  if(!f) return alert("Please select a file");
+  if(!f.type.startsWith("image/")&&!f.type.startsWith("video/")) return alert("Only images and videos are allowed");
 
-  // Show loading
   const publishBtn = document.querySelector('#post button');
   const originalText = publishBtn.textContent;
   publishBtn.textContent = 'Uploading...';
@@ -1681,13 +1769,17 @@ function publish(){
 
   const r=new FileReader();
   r.onload=()=>{
+    // Use profile data if available, otherwise use defaults
+    const authorUsername = userProfile.username || user.email.split('@')[0];
+    const authorAvatar = userProfile.avatar || defaultAvatars[0];
+    
     db.collection("posts").add({
       title:t,
       media:r.result,
       type:f.type,
       author:user.email,
-      authorUsername: userProfile.username || user.email.split('@')[0],
-      authorAvatar: userProfile.avatar || defaultAvatars[0],
+      authorUsername: authorUsername,
+      authorAvatar: authorAvatar,
       time:firebase.firestore.FieldValue.serverTimestamp()
     }).then(() => {
       document.getElementById('title').value=""; 
@@ -1713,103 +1805,6 @@ document.getElementById('file').addEventListener('change', function(e) {
   } else {
     label.textContent = '📁 Choose file or drag and drop';
   }
-});
-
-// LOAD POSTS
-async function loadPosts(){
-  const postsContainer = document.getElementById('posts');
-  postsContainer.innerHTML = '<div class="loading"></div>';
-  
-  db.collection("posts").orderBy("time","desc").onSnapshot(async s=>{
-    if(s.empty){
-      postsContainer.innerHTML='<p style="text-align:center;padding:40px;color:#ff9999;">No posts yet. Be the first to post!</p>';
-      return;
-    }
-    
-    postsContainer.innerHTML="";
-    
-    // Get all posts and load profiles
-    const posts = [];
-    s.forEach(d => posts.push({ id: d.id, data: d.data() }));
-    
-    // Load profiles for all authors
-    for (const post of posts) {
-      const p = post.data;
-      const div = document.createElement("div");
-      div.className = 'post';
-      
-      // Format timestamp
-      const time = p.time ? new Date(p.time.seconds * 1000).toLocaleString() : 'Just now';
-      
-      // Check if author is exoticslash3r@gmail.com
-      const isAndre = p.author === 'exoticslash3r@gmail.com';
-      const tagClass = isAndre ? 'tag andre-tag' : 'tag regular-tag';
-      const tagText = isAndre ? 'AndreKriegman' : (p.authorUsername || p.author.split('@')[0]);
-      
-      // Get avatar (try from post data, then load from profile)
-      let avatar = p.authorAvatar || defaultAvatars[0];
-      
-      div.innerHTML=`
-        <div class="post-header">
-          <div class="post-user-info">
-            <img src="${avatar}" alt="Avatar" class="post-avatar">
-            <div>
-              <div class="post-username">${p.authorUsername || p.author.split('@')[0]}</div>
-              <div class="post-time">${time}</div>
-            </div>
-          </div>
-          <span class="${tagClass}">${tagText}</span>
-        </div>
-        <strong>${p.title}</strong>
-      `;
-      
-      if(p.media){
-        if(p.type.startsWith("image")){
-          const img = document.createElement('img');
-          img.src = p.media;
-          img.alt = p.title;
-          img.className = 'media-preview';
-          img.loading = 'lazy';
-          img.style.cursor = 'zoom-in';
-          img.onclick = () => openMediaModal(p.media, p.type);
-          div.appendChild(img);
-        }else{
-          const video = document.createElement('video');
-          video.src = p.media;
-          video.controls = true;
-          video.className = 'media-preview';
-          video.style.cursor = 'pointer';
-          video.onclick = () => openMediaModal(p.media, p.type);
-          div.appendChild(video);
-        }
-      }
-      
-      // DELETE BUTTON IF OWNER OR ADMIN
-      const currentUser = auth.currentUser;
-      if (currentUser && (currentUser.email === p.author || currentUser.email === 'exoticslash3r@gmail.com')) {
-        const del = document.createElement('button');
-        del.textContent = 'Delete';
-        del.className = 'delete';
-        del.onclick = (e) => {
-          e.stopPropagation();
-          if (confirm('Delete this post?')) {
-            db.collection('posts').doc(post.id).delete();
-          }
-        };
-        div.appendChild(del);
-      }
-      
-      postsContainer.appendChild(div);
-    }
-  }, error => {
-    postsContainer.innerHTML='<p style="text-align:center;padding:40px;color:#ff6666;">Error loading posts. Please try again.</p>';
-    console.error('Error loading posts:', error);
-  });
-}
-
-// Initialize
-document.addEventListener('DOMContentLoaded', () => {
-  show('login');
 });
 
 // Close modals when clicking outside content
